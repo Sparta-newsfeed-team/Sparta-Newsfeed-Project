@@ -1,5 +1,6 @@
 package com.example.newsfeedproject.follow.service;
 
+import com.example.newsfeedproject.follow.dto.FollowerResponse;
 import com.example.newsfeedproject.follow.dto.FollowingResponse;
 import com.example.newsfeedproject.follow.entity.Follow;
 import com.example.newsfeedproject.follow.repository.FollowRepository;
@@ -63,11 +64,26 @@ public class FollowService {
     /** 팔로잉 목록 조회 로직 **/
     @Transactional(readOnly = true)
     public List<FollowingResponse> getFollowingList(User user) {
-        // 로그인한 유저가 팔로우한 모든 팔로우 관계 조회
+        // 로그인한 유저가 팔로우한 모든 팔로잉 조회
         List<Follow> followList = followRepository.findAllByUser(user);
 
+        // 조회한 리스트를 순회하며 DTO 변환
         return followList.stream()
                 .map(followMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    /** 팔로워 목록 조회 로직 **/
+    @Transactional(readOnly = true)
+    public List<FollowerResponse> getFollowerList(User user) {
+        // 로그인한 유저를 팔로우하는 모든 팔로워 조회
+        List<Follow> followerList = followRepository.findAllByFollowingUser(user);
+
+        // 조회한 리스트를 순회하며 DTO 변환
+        return followerList.stream()
+                .map(followMapper::toFollowerResponse)
+                .collect(Collectors.toList());
+
+
     }
 }

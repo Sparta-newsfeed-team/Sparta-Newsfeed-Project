@@ -1,6 +1,7 @@
 package com.example.newsfeedproject.follow.controller;
 
 import com.example.newsfeedproject.common.annoation.LoginUserResolver;
+import com.example.newsfeedproject.follow.dto.FollowerResponse;
 import com.example.newsfeedproject.follow.dto.FollowingResponse;
 import com.example.newsfeedproject.follow.repository.FollowRepository;
 import com.example.newsfeedproject.follow.service.FollowService;
@@ -46,10 +47,22 @@ public class FollowController {
      * 팔로잉 목록 조회
      */
     @GetMapping("/following")
-    public ResponseEntity<List<FollowingResponse>> getFollowingUsers(
+    public ResponseEntity<List<FollowingResponse>> getFollowingList(
             @LoginUserResolver User user
     ) {
         List<FollowingResponse> followingList = followService.getFollowingList(user);
         return ResponseEntity.ok(followingList);
+    }
+
+
+    /**
+     * 팔로워 목록 조회
+     */
+    @GetMapping("/followers")
+    public ResponseEntity<List<FollowerResponse>> getFollowerList(
+            @LoginUserResolver User user
+    ) {
+        List<FollowerResponse> followerList = followService.getFollowerList(user);
+        return ResponseEntity.ok(followerList);
     }
 }
