@@ -1,6 +1,7 @@
 package com.example.newsfeedproject.post.service;
 
 import com.example.newsfeedproject.mapper.PostMapper;
+import com.example.newsfeedproject.post.dto.PostListResponse;
 import com.example.newsfeedproject.post.dto.PostRequest;
 import com.example.newsfeedproject.post.dto.PostResponse;
 import com.example.newsfeedproject.post.dto.UpdatePostContentRequest;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +33,14 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostResponse> getPosts(Pageable pageable) {
-        return postRepository.findAll(pageable)
-                .map(postMapper::toResponse);
+    public PostListResponse getPosts(Pageable pageable) {
+        Page<Post> postPage = postRepository.findAll(pageable);
+        List<PostResponse> postResponses = postMapper.toListResponse(postPage);
+        return new PostListResponse(
+                postResponses,
+                postPage.getSize(),
+                postPage.getNumber(),
+                postPage.getTotalElements());
     }
 
     @Transactional(readOnly = true)

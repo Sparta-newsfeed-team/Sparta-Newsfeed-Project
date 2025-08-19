@@ -1,5 +1,6 @@
 package com.example.newsfeedproject.post.controller;
 
+import com.example.newsfeedproject.post.dto.PostListResponse;
 import com.example.newsfeedproject.post.dto.PostRequest;
 import com.example.newsfeedproject.post.dto.PostResponse;
 import com.example.newsfeedproject.post.dto.UpdatePostContentRequest;
@@ -34,7 +35,7 @@ public class PostController {
      * 전체 게시물 조회
      **/
     @GetMapping
-    public ResponseEntity<Page<PostResponse>> getPosts(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<PostListResponse> getPosts(@RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
         return ResponseEntity.ok(postService.getPosts(pageable));
     }
