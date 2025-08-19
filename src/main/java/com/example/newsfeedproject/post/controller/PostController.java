@@ -6,6 +6,10 @@ import com.example.newsfeedproject.post.dto.UpdatePostContentRequest;
 import com.example.newsfeedproject.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +28,15 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest postRequest) {
         PostResponse postResponse = postService.createPost(postRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(postResponse);
+    }
+
+    /**
+     * 전체 게시물 조회
+     **/
+    @GetMapping
+    public ResponseEntity<Page<PostResponse>> getPosts(@RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
+        return ResponseEntity.ok(postService.getPosts(pageable));
     }
 
     /**

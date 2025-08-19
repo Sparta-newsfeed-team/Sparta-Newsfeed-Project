@@ -7,10 +7,13 @@ import com.example.newsfeedproject.post.dto.UpdatePostContentRequest;
 import com.example.newsfeedproject.post.entity.Post;
 import com.example.newsfeedproject.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Page;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,12 @@ public class PostService {
         Post post = postMapper.toEntity(postRequest);
         postRepository.save(post);
         return postMapper.toResponse(post);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostResponse> getPosts(Pageable pageable) {
+        return postRepository.findAll(pageable)
+                .map(postMapper::toResponse);
     }
 
     @Transactional(readOnly = true)
