@@ -19,7 +19,6 @@ public class User extends BaseEntity {
     @Column(unique = true, nullable = false, updatable = false)
     private String email;
 
-    @Column(nullable = true, length = 3)
     private Integer age;
 
     @Column(nullable = false)
