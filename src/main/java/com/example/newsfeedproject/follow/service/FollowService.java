@@ -17,6 +17,8 @@ public class FollowService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+
+    /** 팔로우 로직 **/
     @Transactional
     public void followUser(Long followingUserId, User user) {
         // 자기 자신을 팔로우 하는지 확인하는 로직
@@ -37,6 +39,19 @@ public class FollowService {
         followRepository.save(follow);
     }
 
+    /** 언팔로우 로직 **/
+    @Transactional
+    public void unfollowUser(Long followingUserId, User user) {
+        // 언팔로우 할 대상 조회
+        User followingUser = userRepository.findById(followingUserId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
 
+        // 로그인 유저와 언팔로우 대상 유저 사이가 팔로우 한 관계인지 조회
+        Follow follow = followRepository.findByUserAndFollowingUser(user, followingUser)
+                        .orElseThrow(() -> new IllegalArgumentException("팔로우 관계가 아닙니다."));
+
+        // 팔로우 관계 삭제
+        followRepository.delete(follow);
+    }
 
 }

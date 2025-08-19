@@ -7,10 +7,7 @@ import com.example.newsfeedproject.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,5 +25,17 @@ public class FollowController {
     ) {
         followService.followUser(userId, user);
         return ResponseEntity.ok().body("팔로우 되었습니다.");
+    }
+
+    /**
+     * 특정 사용자 언팔로우
+     */
+    @DeleteMapping("/{userId}/follow")
+    public ResponseEntity<String> unfollowUser(
+            @PathVariable Long userId,
+            @LoginUserResolver User user
+    ) {
+        followService.unfollowUser(userId, user);
+        return ResponseEntity.ok().body("언팔로우 하였습니다.");
     }
 }
