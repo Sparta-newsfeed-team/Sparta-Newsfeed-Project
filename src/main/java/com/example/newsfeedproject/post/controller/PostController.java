@@ -33,10 +33,21 @@ public class PostController {
 
     /**
      * 전체 게시물 조회
+     * 생성일 기준 최신순
      **/
     @GetMapping
-    public ResponseEntity<PostListResponse> getPosts(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<PostListResponse> getPostsOrderByCreatedAt(@RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
+        return ResponseEntity.ok(postService.getPosts(pageable));
+    }
+
+    /**
+     * 전체 게시물 조회
+     * 수정일 기준 최신순
+     **/
+    @GetMapping
+    public ResponseEntity<PostListResponse> getPostsOrderByModifiedAt(@RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("modifiedAt").descending());
         return ResponseEntity.ok(postService.getPosts(pageable));
     }
 
