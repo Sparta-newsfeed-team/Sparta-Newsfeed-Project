@@ -1,4 +1,4 @@
-package com.example.newsfeedproject.user.service;
+package com.example.newsfeedproject.auth.service;
 
 import com.example.newsfeedproject.common.config.PasswordEncoder;
 import com.example.newsfeedproject.mapper.UserMapper;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
