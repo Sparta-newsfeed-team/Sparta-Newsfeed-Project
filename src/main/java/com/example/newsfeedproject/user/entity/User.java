@@ -44,4 +44,8 @@ public class User extends BaseEntity {
     public void updatePassword(String password) {
         this.password = password;
     }
+
+    public void markAsWithdrawn(){
+        this.isUsable = false;
+    }
 }
