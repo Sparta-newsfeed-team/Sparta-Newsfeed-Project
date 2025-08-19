@@ -6,7 +6,6 @@ import com.example.newsfeedproject.post.dto.PostResponse;
 import com.example.newsfeedproject.post.dto.UpdatePostContentRequest;
 import com.example.newsfeedproject.post.entity.Post;
 import com.example.newsfeedproject.post.repository.PostRepository;
-import com.example.newsfeedproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,24 +28,26 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId) {
-        Post existingPost = postRepository.findById(postId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."));
+        Post existingPost = findByIdOrElseThrow(postId);
         return postMapper.toResponse(existingPost);
     }
 
     @Transactional
-    public PostResponse updatePostContent(Long id, UpdatePostContentRequest updatePostContentRequest) {
-        Post existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."));
+    public PostResponse updatePostContent(Long postId, UpdatePostContentRequest updatePostContentRequest) {
+        Post existingPost = findByIdOrElseThrow(postId);
         existingPost.updatePostContent(updatePostContentRequest.content());
         postRepository.save(existingPost);
         return postMapper.toResponse(existingPost);
     }
 
     @Transactional
-    public void deletePostById(Long id) {
-        Post existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."));
+    public void deletePostById(Long postId) {
+        Post existingPost = findByIdOrElseThrow(postId);
         postRepository.delete(existingPost);
+    }
+
+    private Post findByIdOrElseThrow(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."));
     }
 }
