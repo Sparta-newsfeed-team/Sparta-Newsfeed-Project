@@ -1,13 +1,19 @@
 package com.example.newsfeedproject.follow.service;
 
+import com.example.newsfeedproject.follow.dto.FollowingResponse;
 import com.example.newsfeedproject.follow.entity.Follow;
 import com.example.newsfeedproject.follow.repository.FollowRepository;
+import com.example.newsfeedproject.mapper.FollowMapper;
 import com.example.newsfeedproject.mapper.UserMapper;
+import com.example.newsfeedproject.user.dto.UserResponse;
 import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +21,7 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final FollowMapper followMapper;
 
 
     /** 팔로우 로직 **/
@@ -54,4 +60,14 @@ public class FollowService {
         followRepository.delete(follow);
     }
 
+    /** 팔로잉 목록 조회 로직 **/
+    @Transactional(readOnly = true)
+    public List<FollowingResponse> getFollowingList(User user) {
+        // 로그인한 유저가 팔로우한 모든 팔로우 관계 조회
+        List<Follow> followList = followRepository.findAllByUser(user);
+
+        return followList.stream()
+                .map(followMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 }

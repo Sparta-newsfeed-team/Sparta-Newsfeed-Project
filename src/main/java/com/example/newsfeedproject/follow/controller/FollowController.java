@@ -1,6 +1,7 @@
 package com.example.newsfeedproject.follow.controller;
 
 import com.example.newsfeedproject.common.annoation.LoginUserResolver;
+import com.example.newsfeedproject.follow.dto.FollowingResponse;
 import com.example.newsfeedproject.follow.repository.FollowRepository;
 import com.example.newsfeedproject.follow.service.FollowService;
 import com.example.newsfeedproject.user.entity.User;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +40,16 @@ public class FollowController {
     ) {
         followService.unfollowUser(userId, user);
         return ResponseEntity.ok().body("언팔로우 하였습니다.");
+    }
+
+    /**
+     * 팔로잉 목록 조회
+     */
+    @GetMapping("/following")
+    public ResponseEntity<List<FollowingResponse>> getFollowingUsers(
+            @LoginUserResolver User user
+    ) {
+        List<FollowingResponse> followingList = followService.getFollowingList(user);
+        return ResponseEntity.ok(followingList);
     }
 }
