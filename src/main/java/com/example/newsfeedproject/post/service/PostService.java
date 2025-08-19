@@ -8,7 +8,6 @@ import com.example.newsfeedproject.post.dto.UpdatePostContentRequest;
 import com.example.newsfeedproject.post.entity.Post;
 import com.example.newsfeedproject.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -47,6 +47,17 @@ public class PostService {
     public PostResponse getPostById(Long postId) {
         Post existingPost = findByIdOrElseThrow(postId);
         return postMapper.toResponse(existingPost);
+    }
+
+    @Transactional(readOnly = true)
+    public PostListResponse getPostsByPeriod(LocalDateTime start, LocalDateTime end, Pageable pageable) {
+        Page<Post> postPage = postRepository.findAllByCreatedAtBetween(start, end, pageable);
+        List<PostResponse> postResponses = postMapper.toListResponse(postPage);
+        return new PostListResponse(
+                postResponses,
+                postPage.getSize(),
+                postPage.getNumber(),
+                postPage.getTotalElements());
     }
 
     @Transactional
