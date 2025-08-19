@@ -19,8 +19,7 @@ public class User extends BaseEntity {
     @Column(unique = true, nullable = false, updatable = false)
     private String email;
 
-    @Column(nullable = true, length = 3)
-    private int age;
+    private Integer age;
 
     @Column(nullable = false)
     private String password;
@@ -28,7 +27,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isUsable = true;
 
-    public User(String name, String email, int age, String password) {
+    public User(String name, String email, Integer age, String password) {
         this.name = name;
         this.email = email;
         this.age = age;
@@ -36,9 +35,13 @@ public class User extends BaseEntity {
         this.isUsable = true;
     }
 
-    public void updateInfo(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public void updateUserInfo(String name, Integer age) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (age != null) {
+            this.age = age;
+        }
     }
 
     public void updatePassword(String password) {
