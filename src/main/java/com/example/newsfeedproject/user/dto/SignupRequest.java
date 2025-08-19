@@ -14,7 +14,7 @@ public record SignupRequest(
         @Email(message = "올바른 이메일 형식이 아닙니다.")
         String email,
 
-        @Max(value = 120, message = "나이는 최대 12세까지 입력 가능합니다.")
+        @Max(value = 120, message = "나이는 최대 120세까지 입력 가능합니다.")
         Integer age,
 
         @NotBlank(message = "비밀번호는 필수 입력사항입니다.")

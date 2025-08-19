@@ -32,11 +32,11 @@ public class UserController {
     /**
      * 유저 프로필 조회
      **/
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUserInfo(
-            @PathVariable Long id
+            @PathVariable Long userId
     ) {
-        UserResponse response = userService.getUserInfo(id);
+        UserResponse response = userService.getUserInfo(userId);
         return ResponseEntity.ok(response);
     }
 

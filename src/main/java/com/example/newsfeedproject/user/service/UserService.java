@@ -21,8 +21,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponse getUserInfo(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        User user = userRepository.findByIdOrElseThrow(id);
 
         return userMapper.toResponse(user);
     }
@@ -33,8 +32,7 @@ public class UserService {
             throw new IllegalArgumentException("이름 또는 나이 중 하나는 반드시 입력되어야 합니다.");
         }
 
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        User user = userRepository.findByIdOrElseThrow(id);
         user.updateUserInfo(request.name(), request.age());
 
         return userMapper.toResponse(user);
@@ -42,8 +40,7 @@ public class UserService {
 
     @Transactional
     public void updatePassword(Long id, UpdatePasswordRequest request) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        User user = userRepository.findByIdOrElseThrow(id);
 
         // 현재 비밀번호 확인
         if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
