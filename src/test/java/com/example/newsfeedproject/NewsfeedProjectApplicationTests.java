@@ -1,5 +1,6 @@
 package com.example.newsfeedproject;
 
+import com.example.newsfeedproject.post.dto.PostRequest;
 import com.example.newsfeedproject.user.dto.SignupRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.extension.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -45,20 +45,18 @@ class NewsfeedProjectApplicationTests {
     }
 
     @Test
-    @DisplayName("UserController -> getUserInfo 테스트")
-    void userControllerGetUserInfo () throws Exception {
+    @DisplayName("PostController -> createPost 테스트")
+    void postControllerCreatePost () throws Exception {
 
-        String path = "/users/profile";
+        String path = "/posts";
+        PostRequest postRequest = new PostRequest("제목", "내용");
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("LOGIN_USER", 1L);
-
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(path)
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(path)
                 .contentType(String.valueOf(MediaType.APPLICATION_JSON))
-                .session(session);
+                .content(objectMapper.writeValueAsString(postRequest));
 
         mvc.perform(requestBuilder)
-                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isCreated())
                 .andDo(print());
     }
 }
