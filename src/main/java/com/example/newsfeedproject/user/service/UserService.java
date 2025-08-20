@@ -1,6 +1,8 @@
 package com.example.newsfeedproject.user.service;
 
 import com.example.newsfeedproject.common.config.PasswordEncoder;
+import com.example.newsfeedproject.common.exception.BusinessException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.mapper.UserMapper;
 import com.example.newsfeedproject.user.dto.UpdatePasswordRequest;
 import com.example.newsfeedproject.user.dto.UpdateUserInfoRequest;
@@ -31,7 +33,7 @@ public class UserService {
     public UserResponse updateUserInfo(Long id, UpdateUserInfoRequest request) {
 
         if (request.isEmpty())
-            throw new IllegalArgumentException("이름 또는 나이 중 하나는 반드시 입력되어야 합니다.");
+            throw new BusinessException(ErrorCode.REQUIRED_UPDATE_INFO);
 
         User targetUser = userRepository.findByIdOrElseThrow(id);
         targetUser.updateUserInfo(request.name(), request.age());
@@ -46,11 +48,11 @@ public class UserService {
 
         // 현재 비밀번호 확인
         if (!passwordEncoder.matches(request.currentPassword(), targetUser.getPassword()))
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new BusinessException(ErrorCode.PASSWORD_INCORRECT);
 
         // 동일 비밀번호 여부 확인
         if (passwordEncoder.matches(request.newPassword(), targetUser.getPassword()))
-            throw new IllegalArgumentException("새 비밀번호는 현재 비밀번호와 달라야 합니다.");
+            throw new BusinessException(ErrorCode.PASSWORD_NOT_AVAILABLE);
 
         targetUser.updatePassword(passwordEncoder.encode(request.newPassword()));
     }

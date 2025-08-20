@@ -1,5 +1,7 @@
 package com.example.newsfeedproject.common.config;
 
+import com.example.newsfeedproject.common.exception.BusinessException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -12,7 +14,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -24,22 +25,20 @@ public class UserHandlerArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
 
-        return parameter.getParameterType().equals(User.class);
+        return parameter.getParameterType().isAssignableFrom(User.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter,
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) throws Exception {
+                                  WebDataBinderFactory binderFactory) {
 
         Object userId = httpSession.getAttribute("LOGIN_USER");
 
         if (Objects.isNull(userId))
-            throw new Exception("유저를 찾을 수 없습니다.");
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 
-        Optional<User> optionalUser = userRepository.findById((Long) userId);
-
-        return optionalUser.orElseThrow(() -> new Exception("유저를 찾을 수 없습니다."));
+        return userRepository.findByIdOrElseThrow((Long) userId);
     }
 }
