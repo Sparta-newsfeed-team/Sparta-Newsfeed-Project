@@ -28,6 +28,7 @@ public class User extends BaseEntity {
     private boolean isUsable = true;
 
     public User(String name, String email, Integer age, String password) {
+
         this.name = name;
         this.email = email;
         this.age = age;
@@ -36,19 +37,23 @@ public class User extends BaseEntity {
     }
 
     public void updateUserInfo(String name, Integer age) {
+
         if (name != null) {
             this.name = name;
         }
+
         if (age != null) {
             this.age = age;
         }
     }
 
     public void updatePassword(String password) {
+
         this.password = password;
     }
 
     public void markAsWithdrawn(){
+
         this.isUsable = false;
     }
 }
