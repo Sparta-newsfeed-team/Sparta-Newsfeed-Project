@@ -1,5 +1,6 @@
 package com.example.newsfeedproject.user.dto;
 
+import com.example.newsfeedproject.common.annoation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -18,6 +19,6 @@ public record SignupRequest(
         Integer age,
 
         @NotBlank(message = "비밀번호는 필수 입력사항입니다.")
-        @Size(min = 8, max = 20, message = "비밀번호는 8~20자 사이여야 합니다.")
+        @ValidPassword
         String password
 ) {}
