@@ -28,7 +28,9 @@ public class PostController {
      **/
     @PostMapping
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest postRequest) {
+
         PostResponse postResponse = postService.createPost(postRequest);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(postResponse);
     }
 
@@ -38,8 +40,11 @@ public class PostController {
      **/
     @GetMapping
     public ResponseEntity<PostListResponse> getPostsOrderByCreatedAt(@RequestParam(defaultValue = "0") int page) {
+
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
-        return ResponseEntity.ok(postService.getPosts(pageable));
+        PostListResponse postListResponse = postService.getPosts(pageable);
+
+        return ResponseEntity.ok(postListResponse);
     }
 
     /**
@@ -48,8 +53,11 @@ public class PostController {
      **/
     @GetMapping
     public ResponseEntity<PostListResponse> getPostsOrderByModifiedAt(@RequestParam(defaultValue = "0") int page) {
+
         Pageable pageable = PageRequest.of(page, 10, Sort.by("modifiedAt").descending());
-        return ResponseEntity.ok(postService.getPosts(pageable));
+        PostListResponse postListResponse = postService.getPosts(pageable);
+
+        return ResponseEntity.ok(postListResponse);
     }
 
     /**
@@ -57,7 +65,10 @@ public class PostController {
      **/
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@Valid @PathVariable Long postId) {
-        return ResponseEntity.ok(postService.getPostById(postId));
+
+        PostResponse postResponseById = postService.getPostById(postId);
+
+        return ResponseEntity.ok(postResponseById);
     }
 
     /**
@@ -65,20 +76,26 @@ public class PostController {
      * 생성일 기준 최신순
      **/
     @GetMapping
-    public ResponseEntity<PostListResponse> getPostsByPeriod(
-            @RequestParam LocalDateTime startDate,
-            @RequestParam LocalDateTime endDate,
-            @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<PostListResponse> getPostsByPeriod(@RequestParam LocalDateTime startDate,
+                                                             @RequestParam LocalDateTime endDate,
+                                                             @RequestParam(defaultValue = "0") int page) {
+
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
-        return ResponseEntity.ok(postService.getPostsByPeriod(startDate, endDate, pageable));
+        PostListResponse postListResponseByPeriod = postService.getPostsByPeriod(startDate, endDate, pageable);
+
+        return ResponseEntity.ok(postListResponseByPeriod);
     }
 
     /**
      * 게시물 내용 수정
      **/
     @PatchMapping("/{postId}")
-    public ResponseEntity<PostResponse> updatePostContent(@PathVariable Long postId, @Valid @RequestBody UpdatePostContentRequest updatePostContentRequest) {
-        return ResponseEntity.ok(postService.updatePostContent(postId, updatePostContentRequest));
+    public ResponseEntity<PostResponse> updatePostContent(@PathVariable Long postId,
+                                                          @Valid @RequestBody UpdatePostContentRequest updatePostContentRequest) {
+
+        PostResponse updatePostContentResponse = postService.updatePostContent(postId, updatePostContentRequest);
+
+        return ResponseEntity.ok(updatePostContentResponse);
     }
 
     /**
@@ -86,7 +103,9 @@ public class PostController {
      **/
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+
         postService.deletePostById(postId);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("게시물이 삭제되었습니다.");
     }
 }
