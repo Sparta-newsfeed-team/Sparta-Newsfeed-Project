@@ -1,12 +1,12 @@
 package com.example.newsfeedproject.follow.service;
 
+import com.example.newsfeedproject.common.exception.BusinessException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.follow.dto.FollowerResponse;
 import com.example.newsfeedproject.follow.dto.FollowingResponse;
 import com.example.newsfeedproject.follow.entity.Follow;
 import com.example.newsfeedproject.follow.repository.FollowRepository;
 import com.example.newsfeedproject.mapper.FollowMapper;
-import com.example.newsfeedproject.mapper.UserMapper;
-import com.example.newsfeedproject.user.dto.UserResponse;
 import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +32,14 @@ public class FollowService {
 
         // 자기 자신을 팔로우 하는지 확인하는 로직
         if (user.getId().equals(followingUserId))
-            throw new IllegalArgumentException("자기 자신을 팔로우할 수 없습니다.");
+            throw new BusinessException(ErrorCode.CANNOT_FOLLOW_SELF);
 
         // 팔로우 할 대상 유저 확인
         User followingUser = findUserById(followingUserId);
 
         // 이미 팔로우 한 유저인지 확인
         followRepository.findByUserAndFollowingUser(user, followingUser).ifPresent(m -> {
-            throw new IllegalArgumentException("이미 팔로우 한 유저입니다.");
+            throw new BusinessException(ErrorCode.ALREADY_FOLLOWED);
         });
 
         Follow follow = new Follow(user, followingUser);
@@ -58,7 +58,7 @@ public class FollowService {
 
         // 로그인 유저와 언팔로우 대상 유저 사이가 팔로우 한 관계인지 조회
         Follow follow = followRepository.findByUserAndFollowingUser(user, followingUser)
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 관계가 아닙니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.IS_NOT_FOLLOWING));
 
         // 팔로우 관계 삭제
         followRepository.delete(follow);
@@ -102,6 +102,6 @@ public class FollowService {
     private User findUserById(Long userId) {
 
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }

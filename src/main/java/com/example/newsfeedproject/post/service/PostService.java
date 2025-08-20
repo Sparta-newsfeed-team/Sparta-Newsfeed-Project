@@ -2,6 +2,8 @@ package com.example.newsfeedproject.post.service;
 
 import com.example.newsfeedproject.follow.entity.Follow;
 import com.example.newsfeedproject.follow.repository.FollowRepository;
+import com.example.newsfeedproject.common.exception.BusinessException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.mapper.PostMapper;
 import com.example.newsfeedproject.post.dto.PostListResponse;
 import com.example.newsfeedproject.post.dto.PostRequest;
@@ -12,10 +14,8 @@ import com.example.newsfeedproject.post.repository.PostRepository;
 import com.example.newsfeedproject.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
@@ -124,6 +124,6 @@ public class PostService {
     private Post findByIdOrElseThrow(Long postId) {
 
         return postRepository.findById(postId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
     }
 }
