@@ -51,10 +51,10 @@ public class FollowController {
 
     // 팔로워 목록 조회
     @GetMapping("/followers")
-    public ResponseEntity<List<FollowerResponse>> getFollowerList(
-            @LoginUserResolver User user
-    ) {
+    public ResponseEntity<List<FollowerResponse>> getFollowerList(@LoginUserResolver User user) {
+
         List<FollowerResponse> followerList = followService.getFollowerList(user);
+
         return ResponseEntity.ok(followerList);
     }
 }
