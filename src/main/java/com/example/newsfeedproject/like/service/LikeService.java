@@ -44,6 +44,9 @@ public class LikeService {
                     // 게시물 조회
                     Post post = postRepository.findByIdOrElseThrow(postId);
 
+                    if (post.getUser().getId().equals(userId))
+                        throw new ResponseStatusException(HttpStatus.CONFLICT, "본인 게시물에 좋아요를 누를 수 없습니다.");
+
                     // 이미 좋아요 되어 있는 경우
                     if (likeRepository.findByUserIdAndPostId(userId, postId).isPresent())
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요된 게시물입니다.");
