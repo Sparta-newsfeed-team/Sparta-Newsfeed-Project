@@ -1,7 +1,7 @@
 package com.example.newsfeedproject.user.dto;
 
+import com.example.newsfeedproject.common.annoation.ValidPassword;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public record UpdatePasswordRequest(
 
@@ -9,6 +9,6 @@ public record UpdatePasswordRequest(
         String currentPassword,
 
         @NotBlank(message = "변경할 비밀번호를 입력해주세요.")
-        @Size(min = 8, max = 20, message = "비밀번호는 8~20자 사이여야 합니다.")
+        @ValidPassword
         String newPassword
 ) {}
