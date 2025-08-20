@@ -20,23 +20,30 @@ public class AuthService {
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
+
         // 탈퇴한 유저의 이메일도 함께 처리
         if(userRepository.findByEmail(signupRequest.email()).isPresent())
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 
         User user = userMapper.toEntity(signupRequest);
-        user.updatePassword(passwordEncoder.encode(signupRequest.password()));
+        String encodedPassword = passwordEncoder.encode(signupRequest.password());
+        user.updatePassword(encodedPassword);
+
         userRepository.save(user);
     }
 
     @Transactional
     public void withdraw(String email, DeleteUserRequest deleteUserRequest) {
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
         if(!passwordEncoder.matches(user.getPassword(), deleteUserRequest.password()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 
+        // 유저 논리적 삭제
         user.markAsWithdrawn();
+
         userRepository.save(user);
     }
 }
