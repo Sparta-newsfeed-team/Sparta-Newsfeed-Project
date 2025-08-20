@@ -35,32 +35,6 @@ public class PostController {
     }
 
     /**
-     * 전체 게시물 조회
-     * 생성일 기준 최신순
-     **/
-    @GetMapping
-    public ResponseEntity<PostListResponse> getPostsOrderByCreatedAt(@RequestParam(defaultValue = "0") int page) {
-
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
-        PostListResponse postListResponse = postService.getPosts(pageable);
-
-        return ResponseEntity.ok(postListResponse);
-    }
-
-    /**
-     * 전체 게시물 조회
-     * 수정일 기준 최신순
-     **/
-    @GetMapping
-    public ResponseEntity<PostListResponse> getPostsOrderByModifiedAt(@RequestParam(defaultValue = "0") int page) {
-
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("modifiedAt").descending());
-        PostListResponse postListResponse = postService.getPosts(pageable);
-
-        return ResponseEntity.ok(postListResponse);
-    }
-
-    /**
      * 단건 게시물 조회
      **/
     @GetMapping("/{postId}")
@@ -72,18 +46,23 @@ public class PostController {
     }
 
     /**
-     * 기간별 게시물 조회
-     * 생성일 기준 최신순
+     * 전체 또는 기간별 게시물 조회
+     * 수정일 기준 최신순
      **/
     @GetMapping
-    public ResponseEntity<PostListResponse> getPostsByPeriod(@RequestParam LocalDateTime startDate,
-                                                             @RequestParam LocalDateTime endDate,
+    public ResponseEntity<PostListResponse> getPostsByPeriod(@RequestParam(required = false) LocalDateTime startDate,
+                                                             @RequestParam(required = false) LocalDateTime endDate,
                                                              @RequestParam(defaultValue = "0") int page) {
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
-        PostListResponse postListResponseByPeriod = postService.getPostsByPeriod(startDate, endDate, pageable);
+        PostListResponse postListResponse;
 
-        return ResponseEntity.ok(postListResponseByPeriod);
+        if (startDate == null && endDate == null)
+            postListResponse = postService.getPosts(pageable);
+        else
+            postListResponse = postService.getPostsByPeriod(startDate, endDate, pageable);
+
+        return ResponseEntity.ok(postListResponse);
     }
 
     /**
