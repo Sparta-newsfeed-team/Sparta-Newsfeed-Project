@@ -23,6 +23,7 @@ public class AuthController {
      **/
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody SignupRequest request) {
+
         authService.signup(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.");
@@ -32,9 +33,8 @@ public class AuthController {
      * 회원 탈퇴
      **/
     @DeleteMapping("/withdraw")
-    public ResponseEntity<UserResponse> withdraw(
-            @LoginUserResolver User user,
-            @Valid @RequestBody DeleteUserRequest request) {
+    public ResponseEntity<UserResponse> withdraw(@LoginUserResolver User user,
+                                                 @Valid @RequestBody DeleteUserRequest request) {
 
         // 로그인된 사용자인 경우, 서비스 로직 호출
         authService.withdraw(user.getEmail(), request);
