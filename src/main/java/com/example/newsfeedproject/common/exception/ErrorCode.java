@@ -24,7 +24,10 @@ public enum ErrorCode {
     BOOKMARK_ALREADY_EXISTS("BMK-001", "이미 북마크한 게시물입니다.", HttpStatus.BAD_REQUEST),
     BOOKMARK_NOT_FOUND("BMK-002", "해당 게시물에 대한 북마크가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
 
-    INVALID_INPUT_VALUE("VAL-001", "잘못된 입력값 입니다." , HttpStatus.BAD_REQUEST);
+    INVALID_INPUT_VALUE("VAL-001", "잘못된 입력값 입니다." , HttpStatus.BAD_REQUEST),
+
+    COMMENT_NOT_FOUND("CMT-001", "댓글이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    FORBIDDEN_COMMENT("CMT-002", "댓글 수정 또는 삭제 권한이 없습니다.", HttpStatus.FORBIDDEN);
 
     private final String code;
     private final String message;
