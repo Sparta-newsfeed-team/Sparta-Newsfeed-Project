@@ -5,6 +5,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * 비밀번호 유효성 검사를 수행하는 Validator 클래스
  */
@@ -18,9 +20,8 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
     // 유효성 검사 로직
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
-        if (password == null) {
-            return false;
-        }
-        return password.matches(PASSWORD_PATTERN);
+
+        // password가 null이 아니고 정규식 패턴과 일치하는 경우에만 true 반환
+        return Objects.nonNull(password) && password.matches(PASSWORD_PATTERN);
     }
 }

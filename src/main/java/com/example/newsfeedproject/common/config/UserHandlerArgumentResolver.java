@@ -23,6 +23,7 @@ public class UserHandlerArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
+
         return parameter.getParameterType().equals(User.class);
     }
 
@@ -34,11 +35,11 @@ public class UserHandlerArgumentResolver implements HandlerMethodArgumentResolve
 
         Object userId = httpSession.getAttribute("LOGIN_USER");
 
-        if (Objects.isNull(userId)) {
+        if (Objects.isNull(userId))
             throw new Exception("유저를 찾을 수 없습니다.");
-        }
 
         Optional<User> optionalUser = userRepository.findById((Long) userId);
+
         return optionalUser.orElseThrow(() -> new Exception("유저를 찾을 수 없습니다."));
     }
 }
