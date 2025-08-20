@@ -1,5 +1,6 @@
 package com.example.newsfeedproject;
 
+import com.example.newsfeedproject.post.dto.PostRequest;
 import com.example.newsfeedproject.user.dto.SignupRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,16 +28,32 @@ class NewsfeedProjectApplicationTests {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    @Transactional
+    // @Transactional // 만약 주석처리 할 경우 데이터가 DB에 저장됨
     @DisplayName("AuthController -> signup 테스트")
     void authControllerSignup () throws Exception {
 
         String path = "/auth/signup";
-        SignupRequest signupRequest = new SignupRequest("name", "abcd@gmail.com", 123, "password");
+        SignupRequest signupRequest = new SignupRequest("name", "abcd@gmail.com", 60, "111aaaAAA!!!");
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(path)
-                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
-                                .content(objectMapper.writeValueAsString(signupRequest));
+                .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(signupRequest));
+
+        mvc.perform(requestBuilder)
+                .andExpect(status().isCreated())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("PostController -> createPost 테스트")
+    void postControllerCreatePost () throws Exception {
+
+        String path = "/posts";
+        PostRequest postRequest = new PostRequest("제목", "내용");
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(path)
+                .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(postRequest));
 
         mvc.perform(requestBuilder)
                 .andExpect(status().isCreated())

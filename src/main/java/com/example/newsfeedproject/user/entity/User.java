@@ -2,6 +2,7 @@ package com.example.newsfeedproject.user.entity;
 
 import com.example.newsfeedproject.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,13 +28,13 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isUsable = true;
 
+    @Builder
     public User(String name, String email, Integer age, String password) {
 
         this.name = name;
         this.email = email;
         this.age = age;
         this.password = password;
-        this.isUsable = true;
     }
 
     public void updateUserInfo(String name, Integer age) {

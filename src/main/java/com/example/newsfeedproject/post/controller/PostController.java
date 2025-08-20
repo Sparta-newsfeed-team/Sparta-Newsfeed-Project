@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,27 +46,18 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-     // 전체 게시물 조회 (생성일 기준 최신순)
+    // 전체 게시물 조회
     @GetMapping
-    public ResponseEntity<PostListResponse> getPostsOrderByCreatedAt(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<PostListResponse> getPosts(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "createdAt") String sortBy) {
 
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sortBy).descending());
         PostListResponse postListResponse = postService.getPosts(pageable);
 
         return ResponseEntity.ok(postListResponse);
     }
 
-     // 전체 게시물 조회 (수정일 기준 최신순)
-    @GetMapping
-    public ResponseEntity<PostListResponse> getPostsOrderByModifiedAt(@RequestParam(defaultValue = "0") int page) {
-
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("modifiedAt").descending());
-        PostListResponse postListResponse = postService.getPosts(pageable);
-
-        return ResponseEntity.ok(postListResponse);
-    }
-
-     // 단건 게시물 조회
+    // 단건 게시물 조회
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@Valid @PathVariable Long postId) {
 
@@ -77,7 +67,7 @@ public class PostController {
     }
 
      // 기간별 게시물 조회 (생성일 기준 최신순)
-    @GetMapping
+    @GetMapping("/search/period")
     public ResponseEntity<PostListResponse> getPostsByPeriod(@RequestParam LocalDateTime startDate,
                                                              @RequestParam LocalDateTime endDate,
                                                              @RequestParam(defaultValue = "0") int page) {
