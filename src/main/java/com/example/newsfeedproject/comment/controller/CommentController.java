@@ -1,6 +1,7 @@
 package com.example.newsfeedproject.comment.controller;
 
 import com.example.newsfeedproject.comment.dto.CommentCreateResponse;
+import com.example.newsfeedproject.comment.dto.CommentListResponse;
 import com.example.newsfeedproject.comment.dto.CommentRequest;
 import com.example.newsfeedproject.comment.service.CommentService;
 import com.example.newsfeedproject.common.annoation.LoginUserResolver;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +29,13 @@ public class CommentController {
         CommentCreateResponse commentCreateResponse = commentService.createComment(postId, commentRequest, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commentCreateResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CommentListResponse>> getComments(@PathVariable Long postId) {
+
+        List<CommentListResponse> commentListResponse = commentService.getComments(postId);
+
+        return ResponseEntity.ok(commentListResponse);
     }
 }
