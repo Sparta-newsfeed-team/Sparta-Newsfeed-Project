@@ -13,7 +13,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Constraint(validatedBy = PasswordValidator.class)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPassword {
 
