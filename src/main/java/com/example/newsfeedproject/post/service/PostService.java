@@ -56,7 +56,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId) {
 
-        Post existingPost = findByIdOrElseThrow(postId);
+        Post existingPost = postRepository.findByIdOrElseThrow(postId);
 
         return postMapper.toResponse(existingPost);
     }
@@ -106,7 +106,7 @@ public class PostService {
     @Transactional
     public PostResponse updatePostContent(Long postId, UpdatePostContentRequest updatePostContentRequest) {
 
-        Post existingPost = findByIdOrElseThrow(postId);
+        Post existingPost = postRepository.findByIdOrElseThrow(postId);
         existingPost.updatePostContent(updatePostContentRequest.content());
 
         postRepository.save(existingPost);
@@ -117,13 +117,7 @@ public class PostService {
     @Transactional
     public void deletePostById(Long postId) {
 
-        Post existingPost = findByIdOrElseThrow(postId);
+        Post existingPost = postRepository.findByIdOrElseThrow(postId);
         postRepository.delete(existingPost);
-    }
-
-    private Post findByIdOrElseThrow(Long postId) {
-
-        return postRepository.findById(postId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
     }
 }

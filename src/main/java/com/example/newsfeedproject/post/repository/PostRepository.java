@@ -1,5 +1,7 @@
 package com.example.newsfeedproject.post.repository;
 
+import com.example.newsfeedproject.common.exception.BusinessException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.post.entity.Post;
 import com.example.newsfeedproject.user.entity.User;
 import org.springframework.data.domain.Page;
@@ -17,4 +19,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
      * 특정 유저 목록(List<User>)에 포함된 모든 게시물을 페이징하여 조회
      */
     Page<Post> findByUserIn(List<User> users, Pageable pageable);
+
+    default Post findByIdOrElseThrow(Long postId) {
+
+        return findById(postId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+    }
 }

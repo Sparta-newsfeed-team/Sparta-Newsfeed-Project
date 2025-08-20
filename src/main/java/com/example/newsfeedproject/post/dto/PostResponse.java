@@ -10,6 +10,7 @@ public record PostResponse(
         Long id,
         String title,
         String content,
+        Long likesCount,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         UserResponse userResponse
