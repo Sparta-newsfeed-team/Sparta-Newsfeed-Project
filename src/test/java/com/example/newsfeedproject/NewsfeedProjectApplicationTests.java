@@ -9,10 +9,10 @@ import org.junit.jupiter.api.extension.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,19 +28,37 @@ class NewsfeedProjectApplicationTests {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    @Transactional
+    // @Transactional // 만약 주석처리 할 경우 데이터가 DB에 저장됨
     @DisplayName("AuthController -> signup 테스트")
     void authControllerSignup () throws Exception {
 
         String path = "/auth/signup";
-        SignupRequest signupRequest = new SignupRequest("name", "abcd@gmail.com", 123, "password");
+        SignupRequest signupRequest = new SignupRequest("name", "abcd@gmail.com", 60, "111aaaAAA!!!");
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(path)
-                        .contentType(String.valueOf(MediaType.APPLICATION_JSON))
-                                .content(objectMapper.writeValueAsString(signupRequest));
+                .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(signupRequest));
 
         mvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("UserController -> getUserInfo 테스트")
+    void userControllerGetUserInfo () throws Exception {
+
+        String path = "/users/profile";
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("LOGIN_USER", 1L);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(path)
+                .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                .session(session);
+
+        mvc.perform(requestBuilder)
+                .andExpect(status().is2xxSuccessful())
                 .andDo(print());
     }
 }
