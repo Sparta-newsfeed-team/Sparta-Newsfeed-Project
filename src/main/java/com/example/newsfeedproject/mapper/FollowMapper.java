@@ -12,7 +12,7 @@ public interface FollowMapper {
     // 팔로잉 목록 조회 Mapping
     @Mapping(source = "followingUser.id", target = "id")
     @Mapping(source = "followingUser.name", target = "name")
-    FollowingResponse toResponse(Follow follow);
+    FollowingResponse toFollowingResponse(Follow follow);
 
     // 팔로워 목록 조회
     @Mapping(source = "user.id", target = "id")
