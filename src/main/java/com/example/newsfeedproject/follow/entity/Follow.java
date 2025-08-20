@@ -16,7 +16,7 @@ public class Follow extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 팔로우를 요청한 사람 (user_id - FK)
+    // 팔로우를 요청한 사람 (FK: user_id)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -30,6 +30,4 @@ public class Follow extends BaseEntity {
         this.user = user;
         this.followingUser = followingUser;
     }
-
-
 }

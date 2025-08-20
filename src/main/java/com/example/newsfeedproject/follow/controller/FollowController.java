@@ -17,47 +17,39 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class FollowController {
+
     private final FollowService followService;
 
-    /**
-     * 특정 사용자 팔로우
-     */
+    // 특정 사용자 팔로우
     @PostMapping("/{userId}/follow")
-    public ResponseEntity<String> followUser(
-            @PathVariable Long userId,
-            @LoginUserResolver User user
-    ) {
+    public ResponseEntity<String> followUser(@PathVariable Long userId,
+                                             @LoginUserResolver User user) {
+
         followService.followUser(userId, user);
+
         return ResponseEntity.ok().body("팔로우 되었습니다.");
     }
 
-    /**
-     * 특정 사용자 언팔로우
-     */
+    // 특정 사용자 언팔로우
     @DeleteMapping("/{userId}/follow")
-    public ResponseEntity<String> unfollowUser(
-            @PathVariable Long userId,
-            @LoginUserResolver User user
-    ) {
+    public ResponseEntity<String> unfollowUser(@PathVariable Long userId,
+                                               @LoginUserResolver User user) {
+
         followService.unfollowUser(userId, user);
+
         return ResponseEntity.ok().body("언팔로우 하였습니다.");
     }
 
-    /**
-     * 팔로잉 목록 조회
-     */
+    // 팔로잉 목록 조회
     @GetMapping("/following")
-    public ResponseEntity<List<FollowingResponse>> getFollowingList(
-            @LoginUserResolver User user
-    ) {
+    public ResponseEntity<List<FollowingResponse>> getFollowingList(@LoginUserResolver User user) {
+
         List<FollowingResponse> followingList = followService.getFollowingList(user);
+
         return ResponseEntity.ok(followingList);
     }
 
-
-    /**
-     * 팔로워 목록 조회
-     */
+    // 팔로워 목록 조회
     @GetMapping("/followers")
     public ResponseEntity<List<FollowerResponse>> getFollowerList(
             @LoginUserResolver User user
