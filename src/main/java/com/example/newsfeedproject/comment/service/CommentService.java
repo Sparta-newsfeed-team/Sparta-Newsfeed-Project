@@ -3,6 +3,7 @@ package com.example.newsfeedproject.comment.service;
 import com.example.newsfeedproject.comment.dto.CommentCreateResponse;
 import com.example.newsfeedproject.comment.dto.CommentListResponse;
 import com.example.newsfeedproject.comment.dto.CommentRequest;
+import com.example.newsfeedproject.comment.dto.CommentUpdateResponse;
 import com.example.newsfeedproject.comment.entity.Comment;
 import com.example.newsfeedproject.comment.repository.CommentRepository;
 import com.example.newsfeedproject.common.exception.BusinessException;
@@ -49,5 +50,39 @@ public class CommentService {
                 .collect(Collectors.toList());
 
         return commentListResponse;
+    }
+
+    @Transactional
+    public CommentUpdateResponse updateComment(Long commentId, CommentRequest request, User user) {
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
+
+        boolean isCommentAuthor = comment.getUser().getId().equals(user.getId());
+        boolean isPostAuthor = comment.getPost().getId().equals(user.getId());
+
+        // 댓글 작성자도 아니고 게시글 작성자도 아니면 예외 발생
+        if (isCommentAuthor || isPostAuthor)
+            throw new BusinessException(ErrorCode.FORBIDDEN_COMMENT);
+
+        comment.updateContent(request.content());
+
+        return commentMapper.toUpdateResponse(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId, User user) {
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
+
+        boolean isCommentAuthor = comment.getUser().getId().equals(user.getId());
+        boolean isPostAuthor = comment.getPost().getId().equals(user.getId());
+
+        // 댓글 작성자도 아니고 게시글 작성자도 아니면 예외 발생
+        if (isCommentAuthor || isPostAuthor)
+            throw new BusinessException(ErrorCode.FORBIDDEN_COMMENT);
+
+        commentRepository.delete(comment);
     }
 }

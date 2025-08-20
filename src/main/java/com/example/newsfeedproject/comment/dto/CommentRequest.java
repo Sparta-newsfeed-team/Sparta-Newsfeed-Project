@@ -1,9 +1,9 @@
-package com.example.newsfeedproject.comment.dto;
+        package com.example.newsfeedproject.comment.dto;
 
-import jakarta.validation.constraints.NotBlank;
+        import jakarta.validation.constraints.NotBlank;
 
-public record CommentRequest(
+        public record CommentRequest(
 
-        @NotBlank(message = "댓글 내용은 필수입니다.")
-        String content
-) {}
+                @NotBlank(message = "댓글 내용은 필수입니다.")
+                String content
+        ) {}
