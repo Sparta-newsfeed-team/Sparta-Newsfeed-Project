@@ -1,10 +1,12 @@
 package com.example.newsfeedproject.post.controller;
 
+import com.example.newsfeedproject.common.annoation.LoginUserResolver;
 import com.example.newsfeedproject.post.dto.PostListResponse;
 import com.example.newsfeedproject.post.dto.PostRequest;
 import com.example.newsfeedproject.post.dto.PostResponse;
 import com.example.newsfeedproject.post.dto.UpdatePostContentRequest;
 import com.example.newsfeedproject.post.service.PostService;
+import com.example.newsfeedproject.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,9 +26,7 @@ public class PostController {
 
     private final PostService postService;
 
-    /**
-     * 뉴스피드 게시물 생성
-     **/
+     // 뉴스피드 게시물 생성
     @PostMapping
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest postRequest) {
 
@@ -34,10 +35,19 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(postResponse);
     }
 
-    /**
-     * 전체 게시물 조회
-     * 생성일 기준 최신순
-     **/
+    // 뉴스피드 조회 (내가 팔로우한 사용자들의 게시물 최신순)
+    @GetMapping("/feed")
+    public ResponseEntity<PostListResponse> getNewsfeed(@LoginUserResolver User user,
+                                                        @RequestParam(defaultValue = "0") int page) {
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
+
+        PostListResponse response = postService.getNewsfeed(user, pageable);
+
+        return ResponseEntity.ok(response);
+    }
+
+     // 전체 게시물 조회 (생성일 기준 최신순)
     @GetMapping
     public ResponseEntity<PostListResponse> getPostsOrderByCreatedAt(@RequestParam(defaultValue = "0") int page) {
 
@@ -47,10 +57,7 @@ public class PostController {
         return ResponseEntity.ok(postListResponse);
     }
 
-    /**
-     * 전체 게시물 조회
-     * 수정일 기준 최신순
-     **/
+     // 전체 게시물 조회 (수정일 기준 최신순)
     @GetMapping
     public ResponseEntity<PostListResponse> getPostsOrderByModifiedAt(@RequestParam(defaultValue = "0") int page) {
 
@@ -60,9 +67,7 @@ public class PostController {
         return ResponseEntity.ok(postListResponse);
     }
 
-    /**
-     * 단건 게시물 조회
-     **/
+     // 단건 게시물 조회
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@Valid @PathVariable Long postId) {
 
@@ -71,10 +76,7 @@ public class PostController {
         return ResponseEntity.ok(postResponseById);
     }
 
-    /**
-     * 기간별 게시물 조회
-     * 생성일 기준 최신순
-     **/
+     // 기간별 게시물 조회 (생성일 기준 최신순)
     @GetMapping
     public ResponseEntity<PostListResponse> getPostsByPeriod(@RequestParam LocalDateTime startDate,
                                                              @RequestParam LocalDateTime endDate,
@@ -86,9 +88,7 @@ public class PostController {
         return ResponseEntity.ok(postListResponseByPeriod);
     }
 
-    /**
-     * 게시물 내용 수정
-     **/
+     // 게시물 내용 수정
     @PatchMapping("/{postId}")
     public ResponseEntity<PostResponse> updatePostContent(@PathVariable Long postId,
                                                           @Valid @RequestBody UpdatePostContentRequest updatePostContentRequest) {
@@ -98,9 +98,7 @@ public class PostController {
         return ResponseEntity.ok(updatePostContentResponse);
     }
 
-    /**
-     * 게시물 삭제
-     **/
+     // 게시물 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Long postId) {
 

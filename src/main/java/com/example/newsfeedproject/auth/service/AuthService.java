@@ -28,7 +28,8 @@ public class AuthService {
             throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
 
         User user = userMapper.toEntity(signupRequest);
-        user.updatePassword(passwordEncoder.encode(signupRequest.password()));
+        String encodedPassword = passwordEncoder.encode(signupRequest.password());
+        user.updatePassword(encodedPassword);
 
         userRepository.save(user);
     }
@@ -42,6 +43,7 @@ public class AuthService {
         if (!passwordEncoder.matches(user.getPassword(), deleteUserRequest.password()))
             throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
 
+        // 유저 논리적 삭제
         user.markAsWithdrawn();
 
         userRepository.save(user);

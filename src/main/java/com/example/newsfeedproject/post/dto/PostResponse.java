@@ -12,5 +12,5 @@ public record PostResponse(
         String content,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        List<UserResponse> users
+        UserResponse userResponse
 ) {}
