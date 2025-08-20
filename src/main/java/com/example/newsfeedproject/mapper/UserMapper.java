@@ -5,10 +5,18 @@ import com.example.newsfeedproject.user.dto.UserResponse;
 import com.example.newsfeedproject.user.entity.User;
 import org.mapstruct.Mapper;
 
+/**
+ * User 관련 매핑 처리를 위한 Mapper 클래스
+ * toEntity : SignupRequest DTO를 User 엔티티로 변환
+ * toResponse : User 엔티티를 UserResponse DTO로 변환
+ */
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+    // SignupRequest DTO -> User Entity
     User toEntity(SignupRequest signupRequest);
+
+    // User Entity -> UserResponse DTO
     UserResponse toResponse(User user);
 }
 
