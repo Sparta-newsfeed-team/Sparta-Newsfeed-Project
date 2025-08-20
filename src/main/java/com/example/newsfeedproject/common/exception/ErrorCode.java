@@ -22,7 +22,9 @@ public enum ErrorCode {
     IS_NOT_FOLLOWING("FOLL-003", "팔로우 관계가 아닙니다.", HttpStatus.BAD_REQUEST),
 
     BOOKMARK_ALREADY_EXISTS("BMK-001", "이미 북마크한 게시물입니다.", HttpStatus.BAD_REQUEST),
-    BOOKMARK_NOT_FOUND("BMK-002", "해당 게시물에 대한 북마크가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
+    BOOKMARK_NOT_FOUND("BMK-002", "해당 게시물에 대한 북마크가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+
+    INVALID_INPUT_VALUE("VAL-001", "잘못된 입력값 입니다." , HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
