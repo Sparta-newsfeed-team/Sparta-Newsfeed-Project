@@ -30,8 +30,7 @@ public class CommentService {
     @Transactional
     public CommentCreateResponse createComment(Long postId, CommentRequest request, User user) {
 
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+        Post post = findByPostId(postId);
 
         Comment comment = new Comment(request.content(), post, user);
         commentRepository.save(comment);
@@ -42,8 +41,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentListResponse> getComments(Long postId) {
 
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+        Post post = findByPostId(postId);
 
         List<Comment> comments = commentRepository.findAllByPostOrderByCreatedAtDesc(post);
         List<CommentListResponse> commentListResponse = comments.stream()
@@ -56,15 +54,9 @@ public class CommentService {
     @Transactional
     public CommentUpdateResponse updateComment(Long commentId, CommentRequest request, User user) {
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
+        Comment comment = findByCommentId(commentId);
 
-        boolean isCommentAuthor = comment.getUser().getId().equals(user.getId());
-        boolean isPostAuthor = comment.getPost().getUser().getId().equals(user.getId());
-
-        // 댓글 작성자도 아니고 게시글 작성자도 아니면 예외 발생
-        if (!isCommentAuthor && !isPostAuthor)
-            throw new BusinessException(ErrorCode.FORBIDDEN_COMMENT);
+        validateAuthorOrPostAuthor(comment, user);
 
         comment.updateContent(request.content());
 
@@ -74,8 +66,30 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId, User user) {
 
+        Comment comment = findByCommentId(commentId);
+
+        validateAuthorOrPostAuthor(comment, user);
+
+        commentRepository.delete(comment);
+    }
+
+    private Post findByPostId(Long postId) {
+
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+
+        return post;
+    }
+
+    private Comment findByCommentId(Long commentId) {
+
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND));
+
+        return comment;
+    }
+
+    private void validateAuthorOrPostAuthor(Comment comment, User user) {
 
         boolean isCommentAuthor = comment.getUser().getId().equals(user.getId());
         boolean isPostAuthor = comment.getPost().getUser().getId().equals(user.getId());
@@ -83,7 +97,5 @@ public class CommentService {
         // 댓글 작성자도 아니고 게시글 작성자도 아니면 예외 발생
         if (!isCommentAuthor && !isPostAuthor)
             throw new BusinessException(ErrorCode.FORBIDDEN_COMMENT);
-
-        commentRepository.delete(comment);
     }
 }
