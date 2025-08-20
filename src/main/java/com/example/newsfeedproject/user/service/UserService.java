@@ -22,39 +22,36 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponse getUserInfo(Long id) {
 
-        User user = userRepository.findByIdOrElseThrow(id);
+        User foundUser = userRepository.findByIdOrElseThrow(id);
 
-        return userMapper.toResponse(user);
+        return userMapper.toResponse(foundUser);
     }
 
     @Transactional
     public UserResponse updateUserInfo(Long id, UpdateUserInfoRequest request) {
 
-        if (request.isEmpty()) {
+        if (request.isEmpty())
             throw new IllegalArgumentException("이름 또는 나이 중 하나는 반드시 입력되어야 합니다.");
-        }
 
-        User user = userRepository.findByIdOrElseThrow(id);
-        user.updateUserInfo(request.name(), request.age());
+        User targetUser = userRepository.findByIdOrElseThrow(id);
+        targetUser.updateUserInfo(request.name(), request.age());
 
-        return userMapper.toResponse(user);
+        return userMapper.toResponse(targetUser);
     }
 
     @Transactional
     public void updatePassword(Long id, UpdatePasswordRequest request) {
 
-        User user = userRepository.findByIdOrElseThrow(id);
+        User targetUser = userRepository.findByIdOrElseThrow(id);
 
         // 현재 비밀번호 확인
-        if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.currentPassword(), targetUser.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
 
         // 동일 비밀번호 여부 확인
-        if (passwordEncoder.matches(request.newPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(request.newPassword(), targetUser.getPassword()))
             throw new IllegalArgumentException("새 비밀번호는 현재 비밀번호와 달라야 합니다.");
-        }
 
-        user.updatePassword(passwordEncoder.encode(request.newPassword()));
+        targetUser.updatePassword(passwordEncoder.encode(request.newPassword()));
     }
 }

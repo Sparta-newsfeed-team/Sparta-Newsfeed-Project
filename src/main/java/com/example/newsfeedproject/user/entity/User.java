@@ -38,13 +38,11 @@ public class User extends BaseEntity {
 
     public void updateUserInfo(String name, Integer age) {
 
-        if (name != null) {
+        if (name != null)
             this.name = name;
-        }
 
-        if (age != null) {
+        if (age != null)
             this.age = age;
-        }
     }
 
     public void updatePassword(String password) {

@@ -9,6 +9,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
+    /**
+     * 사용자 ID를 조회하며, 없을 경우 예외를 발생시킵니다.
+     */
     default User findByIdOrElseThrow(Long id) {
 
         return findById(id).orElseThrow(
