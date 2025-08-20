@@ -7,13 +7,14 @@ import com.example.newsfeedproject.post.dto.UpdatePostContentRequest;
 import com.example.newsfeedproject.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,10 +34,21 @@ public class PostController {
 
     /**
      * 전체 게시물 조회
+     * 생성일 기준 최신순
      **/
     @GetMapping
-    public ResponseEntity<PostListResponse> getPosts(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<PostListResponse> getPostsOrderByCreatedAt(@RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
+        return ResponseEntity.ok(postService.getPosts(pageable));
+    }
+
+    /**
+     * 전체 게시물 조회
+     * 수정일 기준 최신순
+     **/
+    @GetMapping
+    public ResponseEntity<PostListResponse> getPostsOrderByModifiedAt(@RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("modifiedAt").descending());
         return ResponseEntity.ok(postService.getPosts(pageable));
     }
 
@@ -46,6 +58,19 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@Valid @PathVariable Long postId) {
         return ResponseEntity.ok(postService.getPostById(postId));
+    }
+
+    /**
+     * 기간별 게시물 조회
+     * 생성일 기준 최신순
+     **/
+    @GetMapping
+    public ResponseEntity<PostListResponse> getPostsByPeriod(
+            @RequestParam LocalDateTime startDate,
+            @RequestParam LocalDateTime endDate,
+            @RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
+        return ResponseEntity.ok(postService.getPostsByPeriod(startDate, endDate, pageable));
     }
 
     /**
