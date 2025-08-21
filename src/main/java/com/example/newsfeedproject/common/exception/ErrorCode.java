@@ -13,7 +13,6 @@ public enum ErrorCode {
 
     PASSWORD_INCORRECT("USR-001", "비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
     PASSWORD_NOT_AVAILABLE("USR-002", "새 비밀번호는 현재 비밀번호와 달라야 합니다.", HttpStatus.BAD_REQUEST),
-    REQUIRED_UPDATE_INFO("USR-003", "이름 또는 나이 중 하나는 반드시 입력되어야 합니다.", HttpStatus.BAD_REQUEST),
 
     POST_NOT_FOUND("POST-001", "존재하지 않는 게시물입니다.", HttpStatus.NOT_FOUND),
 
