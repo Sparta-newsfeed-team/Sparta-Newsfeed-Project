@@ -1,7 +1,7 @@
 package com.example.newsfeedproject.domain.like.service;
 
 import com.example.newsfeedproject.domain.like.dto.LikeResponse;
-import com.example.newsfeedproject.domain.like.dto.ListLikeResponse;
+import com.example.newsfeedproject.domain.like.dto.LikeListResponse;
 import com.example.newsfeedproject.domain.like.entity.Like;
 import com.example.newsfeedproject.domain.like.repository.LikeRepository;
 import com.example.newsfeedproject.domain.post.entity.Post;
@@ -35,7 +35,7 @@ public class LikeService {
      * 좋아요 기능
      * 낙관적 락 / 충돌 시 MAX_RETRY 값 만큼 반복합니다.
      */
-    public LikeResponse addlike(Long userId, Long postId) {
+    public LikeResponse addLike(Long userId, Long postId) {
 
         int attempt = 0;
         while (true) {
@@ -70,7 +70,7 @@ public class LikeService {
      * 좋아요 취소 기능
      * 락 관련 로직은 like 메서드와 동일합니다.
      */
-    public LikeResponse deletelike(Long userId, Long postId) {
+    public LikeResponse deleteLike(Long userId, Long postId) {
 
         int attempt = 0;
         while (true) {
@@ -94,7 +94,7 @@ public class LikeService {
     }
 
     @Transactional(readOnly = true)
-    public ListLikeResponse getLikeList(Long postId) {
+    public LikeListResponse getLikeList(Long postId) {
 
         Post post = postRepository.findByIdOrElseThrow(postId);
 
@@ -106,6 +106,6 @@ public class LikeService {
                 ))
                 .toList();
 
-        return new ListLikeResponse(likedUsers, post.getLikesCount());
+        return new LikeListResponse(likedUsers, post.getLikesCount());
     }
 }
