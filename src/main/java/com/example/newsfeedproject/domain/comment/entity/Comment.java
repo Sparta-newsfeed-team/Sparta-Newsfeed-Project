@@ -4,12 +4,13 @@ import com.example.newsfeedproject.common.entity.BaseEntity;
 import com.example.newsfeedproject.domain.post.entity.Post;
 import com.example.newsfeedproject.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

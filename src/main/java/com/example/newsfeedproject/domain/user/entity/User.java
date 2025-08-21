@@ -2,13 +2,13 @@ package com.example.newsfeedproject.domain.user.entity;
 
 import com.example.newsfeedproject.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,6 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isUsable = true;
 
-    @Builder
     public User(String name, String email, Integer age, String password) {
 
         this.name = name;
