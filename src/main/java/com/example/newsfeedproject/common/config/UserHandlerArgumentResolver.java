@@ -2,8 +2,8 @@ package com.example.newsfeedproject.common.config;
 
 import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
-import com.example.newsfeedproject.user.entity.User;
-import com.example.newsfeedproject.user.repository.UserRepository;
+import com.example.newsfeedproject.domain.user.entity.User;
+import com.example.newsfeedproject.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
