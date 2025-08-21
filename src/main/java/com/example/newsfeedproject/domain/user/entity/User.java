@@ -3,7 +3,6 @@ package com.example.newsfeedproject.domain.user.entity;
 import com.example.newsfeedproject.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
