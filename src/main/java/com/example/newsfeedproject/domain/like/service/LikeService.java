@@ -5,10 +5,10 @@ import com.example.newsfeedproject.domain.like.dto.LikeListResponse;
 import com.example.newsfeedproject.domain.like.entity.Like;
 import com.example.newsfeedproject.domain.like.repository.LikeRepository;
 import com.example.newsfeedproject.domain.post.entity.Post;
-import com.example.newsfeedproject.domain.post.repository.PostRepository;
-import com.example.newsfeedproject.domain.user.dto.PostUserResponse;
+import com.example.newsfeedproject.domain.post.service.PostServiceApi;
+import com.example.newsfeedproject.domain.user.dto.AuthorResponse;
 import com.example.newsfeedproject.domain.user.entity.User;
-import com.example.newsfeedproject.domain.user.repository.UserRepository;
+import com.example.newsfeedproject.domain.user.service.UserServiceApi;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,9 +27,9 @@ public class LikeService {
     private final int MAX_RETRY = 3;
 
     private final LikeRepository likeRepository;
-    private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final TransactionTemplate txTemplate;
+    private final UserServiceApi userService;
+    private final PostServiceApi postService;
 
     /**
      * 좋아요 기능
@@ -42,7 +42,7 @@ public class LikeService {
             try {
                 return txTemplate.execute(status -> {
                     // 게시물 조회
-                    Post post = postRepository.findByIdOrElseThrow(postId);
+                    Post post = postService.findPostByIdOrElseThrow(postId);
 
                     if (post.getUser().getId().equals(userId))
                         throw new ResponseStatusException(HttpStatus.CONFLICT, "본인 게시물에 좋아요를 누를 수 없습니다.");
@@ -51,7 +51,7 @@ public class LikeService {
                     if (likeRepository.findByUserIdAndPostId(userId, postId).isPresent())
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요된 게시물입니다.");
 
-                    User user = userRepository.findByIdOrElseThrow(userId);
+                    User user = userService.findUserByIdOrElseThrow(userId);
                     post.increaseLikes();
 
                     likeRepository.save(new Like(post, user));
@@ -76,7 +76,7 @@ public class LikeService {
         while (true) {
             try {
                 return txTemplate.execute(status -> {
-                    Post post = postRepository.findByIdOrElseThrow(postId);
+                    Post post = postService.findPostByIdOrElseThrow(postId);
 
                     if (likeRepository.findByUserIdAndPostId(userId, postId).isEmpty())
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요 취소된 게시물입니다.");
@@ -96,11 +96,11 @@ public class LikeService {
     @Transactional(readOnly = true)
     public LikeListResponse getLikeList(Long postId) {
 
-        Post post = postRepository.findByIdOrElseThrow(postId);
+        Post post = postService.findPostByIdOrElseThrow(postId);
 
         List<Like> likes = likeRepository.findByPostId(postId);
-        List<PostUserResponse> likedUsers = likes.stream()
-                .map(like -> new PostUserResponse(
+        List<AuthorResponse> likedUsers = likes.stream()
+                .map(like -> new AuthorResponse(
                         like.getUser().getId(),
                         like.getUser().getName()
                 ))

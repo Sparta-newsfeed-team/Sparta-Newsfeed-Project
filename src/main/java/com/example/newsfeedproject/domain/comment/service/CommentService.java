@@ -10,7 +10,7 @@ import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.comment.mapper.CommentMapper;
 import com.example.newsfeedproject.domain.post.entity.Post;
-import com.example.newsfeedproject.domain.post.repository.PostRepository;
+import com.example.newsfeedproject.domain.post.service.PostService;
 import com.example.newsfeedproject.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentService {
 
-    private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
+    private final PostService postService;
 
     @Transactional
     public CommentCreateResponse createComment(Long postId, CommentRequest request, User user) {
 
-        Post post = findByPostId(postId);
+        Post post = postService.findPostByIdOrElseThrow(postId);
 
         Comment comment = new Comment(request.content(), post, user);
         commentRepository.save(comment);
@@ -41,7 +41,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentListResponse> getComments(Long postId) {
 
-        Post post = findByPostId(postId);
+        Post post = postService.findPostByIdOrElseThrow(postId);
 
         List<Comment> comments = commentRepository.findAllByPostOrderByCreatedAtDesc(post);
         List<CommentListResponse> commentListResponse = comments.stream()
@@ -71,14 +71,6 @@ public class CommentService {
         validateAuthorOrPostAuthor(comment, user);
 
         commentRepository.delete(comment);
-    }
-
-    private Post findByPostId(Long postId) {
-
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new BusinessException(ErrorCode.POST_NOT_FOUND));
-
-        return post;
     }
 
     private Comment findByCommentId(Long commentId) {

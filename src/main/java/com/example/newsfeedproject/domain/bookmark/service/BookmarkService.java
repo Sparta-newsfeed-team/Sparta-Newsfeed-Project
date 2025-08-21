@@ -8,7 +8,7 @@ import com.example.newsfeedproject.domain.post.mapper.PostMapper;
 import com.example.newsfeedproject.domain.post.dto.PostListResponse;
 import com.example.newsfeedproject.domain.post.dto.PostResponse;
 import com.example.newsfeedproject.domain.post.entity.Post;
-import com.example.newsfeedproject.domain.post.repository.PostRepository;
+import com.example.newsfeedproject.domain.post.service.PostServiceApi;
 import com.example.newsfeedproject.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,14 +23,13 @@ import java.util.List;
 public class BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
-    private final PostRepository postRepository;
     private final PostMapper postMapper;
+    private final PostServiceApi postService;
 
     @Transactional
     public void addBookmark(User user, Long postId) {
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+        Post post = postService.findPostByIdOrElseThrow(postId);
 
         boolean exists = bookmarkRepository.existsByUserAndPost(user, post);
         if (exists)
@@ -44,8 +43,7 @@ public class BookmarkService {
     @Transactional
     public void removeBookmark(User user, Long postId) {
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+        Post post = postService.findPostByIdOrElseThrow(postId);
 
         Bookmark bookmark = bookmarkRepository.findByUserAndPost(user, post)
                         .orElseThrow(() -> new BusinessException(ErrorCode.BOOKMARK_NOT_FOUND));
