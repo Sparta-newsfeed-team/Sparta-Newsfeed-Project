@@ -1,7 +1,9 @@
 package com.example.newsfeedproject.domain.post.service;
 
+import com.example.newsfeedproject.common.exception.BusinessException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.follow.entity.Follow;
-import com.example.newsfeedproject.domain.follow.repository.FollowRepository;
+import com.example.newsfeedproject.domain.follow.service.FollowService;
 import com.example.newsfeedproject.domain.post.mapper.PostMapper;
 import com.example.newsfeedproject.domain.post.dto.PostListResponse;
 import com.example.newsfeedproject.domain.post.dto.PostRequest;
@@ -22,11 +24,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PostService {
+public class PostService implements PostServiceApi {
 
     private final PostRepository postRepository;
     private final PostMapper postMapper;
-    private final FollowRepository followRepository;
+    private final FollowService followService;
 
     @Transactional
     public PostResponse createPost(PostRequest postRequest, User user) {
@@ -54,7 +56,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId) {
 
-        Post existingPost = postRepository.findByIdOrElseThrow(postId);
+        Post existingPost = findPostByIdOrElseThrow(postId);
 
         return postMapper.toResponse(existingPost);
     }
@@ -76,7 +78,7 @@ public class PostService {
     public PostListResponse getNewsfeed(User user, Pageable pageable) {
 
         // 내가 팔로우 한 유저들 조회 및 비어있는 리스트 생성
-        List<Follow> follows = followRepository.findAllByUser(user);
+        List<Follow> follows = followService.findAllUserByUser(user);
         List<PostResponse> emptyList = Collections.emptyList();
 
         // 팔로우하는 사람이 없을 경우 비어있는 리스트 반환
@@ -104,7 +106,7 @@ public class PostService {
     @Transactional
     public PostResponse updatePostContent(Long postId, UpdatePostContentRequest updatePostContentRequest) {
 
-        Post existingPost = postRepository.findByIdOrElseThrow(postId);
+        Post existingPost = findPostByIdOrElseThrow(postId);
         existingPost.updatePostContent(updatePostContentRequest.content());
 
         postRepository.save(existingPost);
@@ -115,7 +117,15 @@ public class PostService {
     @Transactional
     public void deletePostById(Long postId) {
 
-        Post existingPost = postRepository.findByIdOrElseThrow(postId);
+        Post existingPost = findPostByIdOrElseThrow(postId);
         postRepository.delete(existingPost);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Post findPostByIdOrElseThrow(Long id) {
+
+        return postRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
     }
 }

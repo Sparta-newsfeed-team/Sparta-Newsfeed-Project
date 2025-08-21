@@ -9,6 +9,7 @@ import com.example.newsfeedproject.domain.follow.repository.FollowRepository;
 import com.example.newsfeedproject.domain.follow.mapper.FollowMapper;
 import com.example.newsfeedproject.domain.user.entity.User;
 import com.example.newsfeedproject.domain.user.repository.UserRepository;
+import com.example.newsfeedproject.domain.user.service.UserServiceApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +19,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FollowService {
+public class FollowService implements FollowServiceApi {
 
     private final FollowRepository followRepository;
-    private final UserRepository userRepository;
     private final FollowMapper followMapper;
+    private final UserServiceApi userService;
 
     /**
      * 팔로우 로직
@@ -35,7 +36,7 @@ public class FollowService {
             throw new BusinessException(ErrorCode.CANNOT_FOLLOW_SELF);
 
         // 팔로우 할 대상 유저 확인
-        User followingUser = findUserById(followingUserId);
+        User followingUser = userService.findUserByIdOrElseThrow(followingUserId);
 
         // 이미 팔로우 한 유저인지 확인
         followRepository.findByUserAndFollowingUser(user, followingUser).ifPresent(m -> {
@@ -54,7 +55,7 @@ public class FollowService {
     public void unfollowUser(Long followingUserId, User user) {
 
         // 언팔로우 할 대상 조회
-        User followingUser = findUserById(followingUserId);
+        User followingUser = userService.findUserByIdOrElseThrow(followingUserId);
 
         // 로그인 유저와 언팔로우 대상 유저 사이가 팔로우 한 관계인지 조회
         Follow follow = followRepository.findByUserAndFollowingUser(user, followingUser)
@@ -98,10 +99,10 @@ public class FollowService {
         return followerResponses;
     }
 
-    // 유저 조회 메소드
-    private User findUserById(Long userId) {
+    @Override
+    @Transactional(readOnly = true)
+    public List<Follow> findAllUserByUser(User user) {
 
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return followRepository.findAllByUser(user);
     }
 }

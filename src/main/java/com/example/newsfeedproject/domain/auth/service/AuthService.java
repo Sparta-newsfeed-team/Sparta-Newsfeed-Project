@@ -7,7 +7,7 @@ import com.example.newsfeedproject.domain.user.mapper.UserMapper;
 import com.example.newsfeedproject.domain.user.dto.DeleteUserRequest;
 import com.example.newsfeedproject.domain.user.dto.SignupRequest;
 import com.example.newsfeedproject.domain.user.entity.User;
-import com.example.newsfeedproject.domain.user.repository.UserRepository;
+import com.example.newsfeedproject.domain.user.service.UserServiceApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,29 +16,27 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final UserServiceApi userService;
 
     @Transactional
     public void signup(SignupRequest signupRequest) {
 
-        // 탈퇴한 유저의 이메일도 함께 처리
-        if (userRepository.findByEmail(signupRequest.email()).isPresent())
-            throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        // 탈퇴한 유저의 이메일을 포함하여 중복되는 이메일이 있는 경우 예외 처리
+        userService.checkExistsUserByEmail(signupRequest.email());
 
         User user = userMapper.toEntity(signupRequest);
         String encodedPassword = passwordEncoder.encode(signupRequest.password());
         user.updatePassword(encodedPassword);
 
-        userRepository.save(user);
+        userService.saveUser(user);
     }
 
     @Transactional
     public void withdraw(String email, DeleteUserRequest deleteUserRequest) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        User user = userService.findUserByEmail(email);
 
         if (!passwordEncoder.matches(deleteUserRequest.password(), user.getPassword()))
             throw new BusinessException(ErrorCode.PASSWORD_INCORRECT);
@@ -46,6 +44,6 @@ public class AuthService {
         // 유저 논리적 삭제
         user.markAsWithdrawn();
 
-        userRepository.save(user);
+        userService.saveUser(user);
     }
 }

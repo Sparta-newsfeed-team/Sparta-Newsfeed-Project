@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserServiceApi {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -24,7 +24,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponse getUserInfo(Long id) {
 
-        User foundUser = userRepository.findByIdOrElseThrow(id);
+        User foundUser = findUserByIdOrElseThrow(id);
 
         return userMapper.toResponse(foundUser);
     }
@@ -32,7 +32,7 @@ public class UserService {
     @Transactional
     public UserResponse updateUserInfo(Long id, UpdateUserInfoRequest request) {
 
-        User targetUser = userRepository.findByIdOrElseThrow(id);
+        User targetUser = findUserByIdOrElseThrow(id);
         targetUser.updateUserInfo(request.name(), request.age());
 
         return userMapper.toResponse(targetUser);
@@ -41,7 +41,7 @@ public class UserService {
     @Transactional
     public void updatePassword(Long id, UpdatePasswordRequest request) {
 
-        User targetUser = userRepository.findByIdOrElseThrow(id);
+        User targetUser = findUserByIdOrElseThrow(id);
 
         // 현재 비밀번호 확인
         if (!passwordEncoder.matches(request.currentPassword(), targetUser.getPassword()))
@@ -52,5 +52,35 @@ public class UserService {
             throw new BusinessException(ErrorCode.PASSWORD_NOT_AVAILABLE);
 
         targetUser.updatePassword(passwordEncoder.encode(request.newPassword()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findUserByIdOrElseThrow(Long id) {
+
+        return userRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findUserByEmail(String email) {
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void checkExistsUserByEmail(String email) {
+
+        if (userRepository.findByEmail(email).isPresent())
+            throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
+    }
+
+    @Override
+    public void saveUser(User user) {
+
+        userRepository.save(user);
     }
 }
