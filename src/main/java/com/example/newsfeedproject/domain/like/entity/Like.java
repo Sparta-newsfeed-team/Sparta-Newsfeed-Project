@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 // DB 레벨에서의 유일성 강제
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","post_id"}))
+@Table(name = "likes", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","post_id"}))
 public class Like extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
