@@ -32,9 +32,6 @@ public class UserService {
     @Transactional
     public UserResponse updateUserInfo(Long id, UpdateUserInfoRequest request) {
 
-        if (request.isEmpty())
-            throw new BusinessException(ErrorCode.REQUIRED_UPDATE_INFO);
-
         User targetUser = userRepository.findByIdOrElseThrow(id);
         targetUser.updateUserInfo(request.name(), request.age());
 
