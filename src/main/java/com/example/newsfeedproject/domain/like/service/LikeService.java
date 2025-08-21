@@ -98,10 +98,11 @@ public class LikeService {
 
         Post post = postRepository.findByIdOrElseThrow(postId);
 
-        List<PostUserResponse> likedUsers = likeRepository.findByPostId(postId).stream()
+        List<Like> likes = likeRepository.findByPostId(postId);
+        List<PostUserResponse> likedUsers = likes.stream()
                 .map(like -> new PostUserResponse(
-                        like.id(),
-                        like.name()
+                        like.getUser().getId(),
+                        like.getUser().getName()
                 ))
                 .toList();
 
