@@ -24,8 +24,14 @@ public class Bookmark extends BaseEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    public Bookmark(User user, Post post) {
+    private Bookmark(User user, Post post) {
+
         this.user = user;
         this.post = post;
+    }
+
+    public static Bookmark of(User user, Post post) {
+
+        return  new Bookmark(user, post);
     }
 }

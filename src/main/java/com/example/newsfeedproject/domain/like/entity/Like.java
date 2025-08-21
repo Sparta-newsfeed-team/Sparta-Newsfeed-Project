@@ -26,8 +26,13 @@ public class Like extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Like(Post post, User user) {
+    private Like(Post post, User user) {
         this.post = post;
         this.user = user;
+    }
+
+    public static Like of(Post post, User user) {
+
+        return new Like(post, user);
     }
 }

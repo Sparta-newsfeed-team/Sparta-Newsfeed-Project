@@ -31,10 +31,16 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Post(String title, String content, User user) {
+    private Post(String title, String content, User user) {
+
         this.title = title;
         this.content = content;
         this.user = user;
+    }
+
+    public static Post of(String title, String content, User user) {
+
+        return new Post(title, content, user);
     }
 
     public void updatePostContent(String content) {

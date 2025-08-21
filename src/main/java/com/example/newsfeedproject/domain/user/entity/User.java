@@ -28,11 +28,17 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isUsable = true;
 
-    public User(String name, String email, Integer age, String password) {
+    private User(String name, String email, Integer age, String password) {
+
         this.name = name;
         this.email = email;
         this.age = age;
         this.password = password;
+    }
+
+    public static User of(String name, String email, Integer age, String password) {
+
+        return new User(name, email, age, password);
     }
 
     public void updateUserInfo(String name, Integer age) {

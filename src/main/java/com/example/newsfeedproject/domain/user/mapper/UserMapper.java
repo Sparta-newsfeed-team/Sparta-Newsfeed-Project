@@ -14,7 +14,15 @@ import org.mapstruct.Mapper;
 public interface UserMapper {
 
     // SignupRequest DTO -> User Entity
-    User toEntity(SignupRequest signupRequest);
+    default User toEntity(SignupRequest signupRequest) {
+
+        return User.of(
+                signupRequest.name(),
+                signupRequest.email(),
+                signupRequest.age(),
+                signupRequest.password()
+        );
+    }
 
     // User Entity -> UserResponse DTO
     UserResponse toResponse(User user);

@@ -42,7 +42,7 @@ public class FollowService {
             throw new BusinessException(ErrorCode.ALREADY_FOLLOWED);
         });
 
-        Follow follow = new Follow(user, followingUser);
+        Follow follow = Follow.of(user, followingUser);
 
         followRepository.save(follow);
     }

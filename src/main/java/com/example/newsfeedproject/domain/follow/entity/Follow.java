@@ -26,8 +26,14 @@ public class Follow extends BaseEntity {
     @JoinColumn(name = "following_user_id", nullable = false)
     private User followingUser;
 
-    public Follow(User user, User followingUser) {
+    private Follow(User user, User followingUser) {
+
         this.user = user;
         this.followingUser = followingUser;
+    }
+
+    public static Follow of(User user, User followingUser) {
+
+        return new Follow(user, followingUser);
     }
 }

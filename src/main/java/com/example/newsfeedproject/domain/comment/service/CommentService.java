@@ -32,7 +32,7 @@ public class CommentService {
 
         Post post = findByPostId(postId);
 
-        Comment comment = new Comment(request.content(), post, user);
+        Comment comment = Comment.of(request.content(), post, user);
         commentRepository.save(comment);
 
         return commentMapper.toCreateResponse(comment);

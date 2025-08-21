@@ -54,7 +54,7 @@ public class LikeService {
                     User user = userRepository.findByIdOrElseThrow(userId);
                     post.increaseLikes();
 
-                    likeRepository.save(new Like(post, user));
+                    likeRepository.save(Like.of(post, user));
 
                     return new LikeResponse(post.getLikesCount());
                 });

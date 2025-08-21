@@ -21,7 +21,14 @@ import java.util.List;
 public interface PostMapper {
 
     // PostRequest DTO -> Post 엔티티
-    Post toEntity(PostRequest postRequest, User user);
+    default Post toEntity(PostRequest postRequest, User user) {
+
+        return Post.of(
+                postRequest.title(),
+                postRequest.content(),
+                user
+        );
+    }
 
     // Post Entity -> PostResponse DTO
     @Named("toResponse(Post)")

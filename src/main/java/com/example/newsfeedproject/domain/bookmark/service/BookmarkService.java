@@ -36,7 +36,7 @@ public class BookmarkService {
         if (exists)
             throw new BusinessException(ErrorCode.BOOKMARK_ALREADY_EXISTS);
 
-        Bookmark bookmark = new Bookmark(user, post);
+        Bookmark bookmark = Bookmark.of(user, post);
 
         bookmarkRepository.save(bookmark);
     }
