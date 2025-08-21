@@ -3,6 +3,7 @@ package com.example.newsfeedproject.post.entity;
 import com.example.newsfeedproject.common.entity.BaseEntity;
 import com.example.newsfeedproject.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +30,13 @@ public class Post extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Builder
+    public Post(String title, String content, User user) {
+        this.title = title;
+        this.content = content;
+        this.user = user;
+    }
 
     public void updatePostContent(String content) {
         this.content = content;
