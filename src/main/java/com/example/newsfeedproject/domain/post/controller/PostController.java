@@ -27,9 +27,10 @@ public class PostController {
 
      // 뉴스피드 게시물 생성
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest postRequest) {
+    public ResponseEntity<PostResponse> createPost(@RequestBody @Valid PostRequest postRequest,
+                                                   @LoginUserResolver User user) {
 
-        PostResponse postResponse = postService.createPost(postRequest);
+        PostResponse postResponse = postService.createPost(postRequest, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(postResponse);
     }

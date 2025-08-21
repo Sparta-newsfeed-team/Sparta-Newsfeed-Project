@@ -29,9 +29,9 @@ public class PostService {
     private final FollowRepository followRepository;
 
     @Transactional
-    public PostResponse createPost(PostRequest postRequest) {
+    public PostResponse createPost(PostRequest postRequest, User user) {
 
-        Post post = postMapper.toEntity(postRequest);
+        Post post = postMapper.toEntity(postRequest, user);
 
         postRepository.save(post);
 
