@@ -1,7 +1,7 @@
 package com.example.newsfeedproject;
 
-import com.example.newsfeedproject.post.dto.PostRequest;
-import com.example.newsfeedproject.user.dto.SignupRequest;
+import com.example.newsfeedproject.domain.post.dto.PostRequest;
+import com.example.newsfeedproject.domain.user.dto.SignupRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
