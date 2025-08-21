@@ -1,6 +1,6 @@
 package com.example.newsfeedproject.domain.user.dto;
 
-public record PostUserResponse(
+public record AuthorResponse(
 
         Long id,
         String name

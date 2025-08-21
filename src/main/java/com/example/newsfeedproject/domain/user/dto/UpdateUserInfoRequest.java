@@ -15,6 +15,6 @@ public record UpdateUserInfoRequest(
 
     @AssertTrue(message = "이름 또는 나이 중 하나는 반드시 입력해야 합니다.")
     public boolean isValidInput() {
-        return name != null && age != null;
+        return name != null || age != null;
     }
 }

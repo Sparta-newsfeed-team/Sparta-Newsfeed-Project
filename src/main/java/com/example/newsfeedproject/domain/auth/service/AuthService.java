@@ -25,7 +25,7 @@ public class AuthService {
 
         // 탈퇴한 유저의 이메일도 함께 처리
         if (userRepository.findByEmail(signupRequest.email()).isPresent())
-            throw new BusinessException(ErrorCode.PASSWORD_INCORRECT);
+            throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
 
         User user = userMapper.toEntity(signupRequest);
         String encodedPassword = passwordEncoder.encode(signupRequest.password());
@@ -40,8 +40,8 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        if (!passwordEncoder.matches(user.getPassword(), deleteUserRequest.password()))
-            throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        if (!passwordEncoder.matches(deleteUserRequest.password(), user.getPassword()))
+            throw new BusinessException(ErrorCode.PASSWORD_INCORRECT);
 
         // 유저 논리적 삭제
         user.markAsWithdrawn();
