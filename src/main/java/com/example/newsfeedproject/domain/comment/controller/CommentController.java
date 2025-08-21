@@ -5,7 +5,7 @@ import com.example.newsfeedproject.domain.comment.dto.CommentListResponse;
 import com.example.newsfeedproject.domain.comment.dto.CommentRequest;
 import com.example.newsfeedproject.domain.comment.dto.CommentUpdateResponse;
 import com.example.newsfeedproject.domain.comment.service.CommentService;
-import com.example.newsfeedproject.common.annoation.LoginUserResolver;
+import com.example.newsfeedproject.common.annotation.LoginUserResolver;
 import com.example.newsfeedproject.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

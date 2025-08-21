@@ -1,6 +1,6 @@
 package com.example.newsfeedproject.domain.post.controller;
 
-import com.example.newsfeedproject.common.annoation.LoginUserResolver;
+import com.example.newsfeedproject.common.annotation.LoginUserResolver;
 import com.example.newsfeedproject.domain.post.dto.PostListResponse;
 import com.example.newsfeedproject.domain.post.dto.PostRequest;
 import com.example.newsfeedproject.domain.post.dto.PostResponse;

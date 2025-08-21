@@ -1,6 +1,6 @@
 package com.example.newsfeedproject.domain.like.controller;
 
-import com.example.newsfeedproject.common.annoation.LoginUserResolver;
+import com.example.newsfeedproject.common.annotation.LoginUserResolver;
 import com.example.newsfeedproject.domain.like.dto.LikeResponse;
 import com.example.newsfeedproject.domain.like.dto.ListLikeResponse;
 import com.example.newsfeedproject.domain.like.service.LikeService;

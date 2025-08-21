@@ -1,6 +1,6 @@
 package com.example.newsfeedproject.domain.user.dto;
 
-import com.example.newsfeedproject.common.annoation.ValidPassword;
+import com.example.newsfeedproject.common.annotation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.example.newsfeedproject.common.annoation;
+package com.example.newsfeedproject.common.annotation;
 
 import com.example.newsfeedproject.common.validator.PasswordValidator;
 import jakarta.validation.Constraint;

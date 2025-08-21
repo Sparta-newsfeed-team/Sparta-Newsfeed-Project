@@ -1,6 +1,6 @@
 package com.example.newsfeedproject.domain.user.controller;
 
-import com.example.newsfeedproject.common.annoation.LoginUserResolver;
+import com.example.newsfeedproject.common.annotation.LoginUserResolver;
 import com.example.newsfeedproject.domain.user.dto.UpdatePasswordRequest;
 import com.example.newsfeedproject.domain.user.dto.UpdateUserInfoRequest;
 import com.example.newsfeedproject.domain.user.dto.UserResponse;

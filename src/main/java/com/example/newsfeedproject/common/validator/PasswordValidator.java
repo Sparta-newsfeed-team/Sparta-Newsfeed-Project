@@ -1,6 +1,6 @@
 package com.example.newsfeedproject.common.validator;
 
-import com.example.newsfeedproject.common.annoation.ValidPassword;
+import com.example.newsfeedproject.common.annotation.ValidPassword;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package com.example.newsfeedproject.domain.bookmark.controller;
 
 import com.example.newsfeedproject.domain.bookmark.service.BookmarkService;
-import com.example.newsfeedproject.common.annoation.LoginUserResolver;
+import com.example.newsfeedproject.common.annotation.LoginUserResolver;
 import com.example.newsfeedproject.domain.post.dto.PostListResponse;
 import com.example.newsfeedproject.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;

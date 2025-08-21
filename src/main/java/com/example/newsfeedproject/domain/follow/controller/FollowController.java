@@ -1,6 +1,6 @@
 package com.example.newsfeedproject.domain.follow.controller;
 
-import com.example.newsfeedproject.common.annoation.LoginUserResolver;
+import com.example.newsfeedproject.common.annotation.LoginUserResolver;
 import com.example.newsfeedproject.domain.follow.dto.FollowerResponse;
 import com.example.newsfeedproject.domain.follow.dto.FollowingResponse;
 import com.example.newsfeedproject.domain.follow.service.FollowService;

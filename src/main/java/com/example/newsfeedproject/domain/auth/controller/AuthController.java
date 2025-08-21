@@ -1,7 +1,7 @@
 package com.example.newsfeedproject.domain.auth.controller;
 
 import com.example.newsfeedproject.domain.auth.service.AuthService;
-import com.example.newsfeedproject.common.annoation.LoginUserResolver;
+import com.example.newsfeedproject.common.annotation.LoginUserResolver;
 import com.example.newsfeedproject.domain.user.dto.DeleteUserRequest;
 import com.example.newsfeedproject.domain.user.dto.SignupRequest;
 import com.example.newsfeedproject.domain.user.dto.UserResponse;
