@@ -98,8 +98,8 @@ public class PostService implements PostServiceApi {
 
         return new PostListResponse(
                 postResponses,
-                postPage.getSize(),
                 postPage.getNumber(),
+                postPage.getTotalPages(),
                 postPage.getTotalElements());
     }
 

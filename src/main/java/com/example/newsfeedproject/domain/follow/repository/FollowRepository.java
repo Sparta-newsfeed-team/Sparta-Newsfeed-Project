@@ -1,19 +1,19 @@
 package com.example.newsfeedproject.domain.follow.repository;
 
 import com.example.newsfeedproject.domain.follow.entity.Follow;
-import com.example.newsfeedproject.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
-    Optional<Follow> findByUserAndFollowingUser(User user, User followingUser);
+    boolean existsByFollowingUserIdAndUserId(Long followingUserId, Long userId);
+
+    void deleteByFollowingUserIdAndUserId(Long followingUserId, Long userId);
 
     // 팔로잉 목록 조회
-    List<Follow> findAllByUser(User user);
+    List<Follow> findAllByUserId(Long userId);
 
     // 팔로우 목록 조회
-    List<Follow> findAllByFollowingUser(User followingUser);
+    List<Follow> findAllByFollowingUserId(Long followingUserId);
 }

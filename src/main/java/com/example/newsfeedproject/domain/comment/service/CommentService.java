@@ -41,9 +41,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentListResponse> getComments(Long postId) {
 
-        Post post = postService.findPostByIdOrElseThrow(postId);
-
-        List<Comment> comments = commentRepository.findAllByPostOrderByCreatedAtDesc(post);
+        List<Comment> comments = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
         List<CommentListResponse> commentListResponse = comments.stream()
                 .map(commentMapper::toListResponse)
                 .collect(Collectors.toList());
