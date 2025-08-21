@@ -2,7 +2,7 @@ package com.example.newsfeedproject.domain.like.controller;
 
 import com.example.newsfeedproject.common.annotation.LoginUserResolver;
 import com.example.newsfeedproject.domain.like.dto.LikeResponse;
-import com.example.newsfeedproject.domain.like.dto.ListLikeResponse;
+import com.example.newsfeedproject.domain.like.dto.LikeListResponse;
 import com.example.newsfeedproject.domain.like.service.LikeService;
 import com.example.newsfeedproject.domain.user.entity.User;
 import jakarta.validation.Valid;
@@ -18,26 +18,26 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping
-    public ResponseEntity<LikeResponse> addlike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
+    public ResponseEntity<LikeResponse> addLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
 
-        LikeResponse likeResponse = likeService.addlike(postId, user.getId());
+        LikeResponse addedLikeResponse = likeService.addLike(postId, user.getId());
 
-        return ResponseEntity.ok(likeResponse);
+        return ResponseEntity.ok(addedLikeResponse);
     }
 
     @DeleteMapping
-    public ResponseEntity<LikeResponse> deletelike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
+    public ResponseEntity<LikeResponse> deleteLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
 
-        LikeResponse deletelike = likeService.deletelike(postId, user.getId());
+        LikeResponse deletedLike = likeService.deleteLike(postId, user.getId());
 
-        return ResponseEntity.ok(deletelike);
+        return ResponseEntity.ok(deletedLike);
     }
 
     @GetMapping
-    public ResponseEntity<ListLikeResponse> getlike(@Valid @PathVariable Long postId) {
+    public ResponseEntity<LikeListResponse> getLike(@Valid @PathVariable Long postId) {
 
-        ListLikeResponse listLikeResponse = likeService.getLikeList(postId);
+        LikeListResponse likeListResponse = likeService.getLikeList(postId);
 
-        return ResponseEntity.ok(listLikeResponse);
+        return ResponseEntity.ok(likeListResponse);
     }
 }
