@@ -6,7 +6,7 @@ import com.example.newsfeedproject.domain.follow.entity.Follow;
 import com.example.newsfeedproject.domain.follow.service.FollowService;
 import com.example.newsfeedproject.domain.hashtag.entity.Hashtag;
 import com.example.newsfeedproject.domain.hashtag.entity.PostHashtag;
-import com.example.newsfeedproject.domain.hashtag.entity.HashtagServiceApi;
+import com.example.newsfeedproject.domain.hashtag.service.HashtagServiceApi;
 import com.example.newsfeedproject.domain.post.mapper.PostMapper;
 import com.example.newsfeedproject.domain.post.dto.PostListResponse;
 import com.example.newsfeedproject.domain.post.dto.PostRequest;
@@ -130,7 +130,6 @@ public class PostService implements PostServiceApi {
         validatePostAuthor(user, existingPost);
 
         hashtagService.deleteHashtagsByPost(existingPost);
-
         postRepository.delete(existingPost);
     }
 
@@ -139,6 +138,22 @@ public class PostService implements PostServiceApi {
         if (!post.getUser().getId().equals(user.getId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN_POST);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public PostListResponse getPostsByHashtag(String tagName, Pageable pageable) {
+
+        Hashtag hashtag = hashtagService.findHashtagByName(tagName);
+        Page<Post> postPage = postRepository.findByHashtagId(hashtag.getId(), pageable);
+
+        List<PostResponse> postResponses = postMapper.toListResponse(postPage);
+
+        return new PostListResponse(
+                postResponses,
+                postPage.getNumber(),
+                postPage.getTotalPages(),
+                postPage.getTotalElements()
+        );
     }
 
     @Override

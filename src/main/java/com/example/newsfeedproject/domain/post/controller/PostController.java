@@ -79,7 +79,17 @@ public class PostController {
         return ResponseEntity.ok(postListResponseByPeriod);
     }
 
-    // 게시물 내용 수정
+    // 해시태그별 게시물 조회 (생성일 기준 최신순)
+    @GetMapping("/search/hashtag")
+    public ResponseEntity<PostListResponse> getPostsByHashtag(@RequestParam String tag,
+                                                              @RequestParam(defaultValue = "0") int page) {
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
+        PostListResponse response = postService.getPostsByHashtag(tag, pageable);
+        return ResponseEntity.ok(response);
+    }
+
+     // 게시물 내용 수정
     @PatchMapping("/{postId}")
     public ResponseEntity<PostResponse> updatePostContent(@LoginUserResolver User user,
                                                           @PathVariable Long postId,
