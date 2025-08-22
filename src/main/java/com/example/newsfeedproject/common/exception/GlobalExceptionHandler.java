@@ -10,23 +10,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<GlobalApiResponse> businessExceptionHandler(BusinessException e) {
+    public ResponseEntity<GlobalApiResponse<?>> businessExceptionHandler(BusinessException e) {
 
         ErrorCode errorCode = e.getErrorCode();
-        GlobalApiResponse response = new GlobalApiResponse(errorCode.getCode(), errorCode.getMessage());
+        GlobalApiResponse<?> response = GlobalApiResponse.error(errorCode.getMessage(), errorCode);
 
         return new ResponseEntity<>(response, errorCode.getHttpStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<GlobalApiResponse> ValidationExceptionHandler(MethodArgumentNotValidException e) {
+    public ResponseEntity<GlobalApiResponse<?>> ValidationExceptionHandler(MethodArgumentNotValidException e) {
 
         String errorMessage = e.getBindingResult()
                 .getAllErrors()
                 .get(0)
                 .getDefaultMessage();
         ErrorCode errorCode = ErrorCode.INVALID_INPUT_VALUE;
-        GlobalApiResponse response = new GlobalApiResponse(errorCode.getCode(), errorMessage);
+        GlobalApiResponse<?> response = GlobalApiResponse.error(errorMessage, errorCode);
 
         return new ResponseEntity<>(response, errorCode.getHttpStatus());
     }
