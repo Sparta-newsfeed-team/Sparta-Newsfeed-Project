@@ -25,12 +25,12 @@ public class PostController {
 
     private final PostService postService;
 
-     // 뉴스피드 게시물 생성
+    // 뉴스피드 게시물 생성
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(@RequestBody @Valid PostRequest postRequest,
+    public ResponseEntity<PostResponse> createPost(@RequestBody @Valid PostRequest request,
                                                    @LoginUserResolver User user) {
 
-        PostResponse postResponse = postService.createPost(postRequest, user);
+        PostResponse postResponse = postService.createPost(request, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(postResponse);
     }
@@ -60,14 +60,14 @@ public class PostController {
 
     // 단건 게시물 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> getPost(@Valid @PathVariable Long postId) {
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
 
         PostResponse postResponseById = postService.getPostById(postId);
 
         return ResponseEntity.ok(postResponseById);
     }
 
-     // 기간별 게시물 조회 (생성일 기준 최신순)
+    // 기간별 게시물 조회 (생성일 기준 최신순)
     @GetMapping("/search/period")
     public ResponseEntity<PostListResponse> getPostsByPeriod(@RequestParam LocalDateTime startDate,
                                                              @RequestParam LocalDateTime endDate,
@@ -79,22 +79,24 @@ public class PostController {
         return ResponseEntity.ok(postListResponseByPeriod);
     }
 
-     // 게시물 내용 수정
+    // 게시물 내용 수정
     @PatchMapping("/{postId}")
-    public ResponseEntity<PostResponse> updatePostContent(@PathVariable Long postId,
-                                                          @Valid @RequestBody UpdatePostContentRequest updatePostContentRequest) {
+    public ResponseEntity<PostResponse> updatePostContent(@LoginUserResolver User user,
+                                                          @PathVariable Long postId,
+                                                          @Valid @RequestBody UpdatePostContentRequest request) {
 
-        PostResponse updatePostContentResponse = postService.updatePostContent(postId, updatePostContentRequest);
+        PostResponse updatePostContentResponse = postService.updatePostContent(user, postId, request);
 
         return ResponseEntity.ok(updatePostContentResponse);
     }
 
-     // 게시물 삭제
+    // 게시물 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+    public ResponseEntity<Void> deletePost(@LoginUserResolver User user,
+                                           @PathVariable Long postId) {
 
-        postService.deletePostById(postId);
+        postService.deletePostById(user, postId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("게시물이 삭제되었습니다.");
+        return ResponseEntity.noContent().build();
     }
 }

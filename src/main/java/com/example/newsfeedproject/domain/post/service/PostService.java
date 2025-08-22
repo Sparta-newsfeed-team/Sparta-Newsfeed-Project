@@ -4,19 +4,19 @@ import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.follow.entity.Follow;
 import com.example.newsfeedproject.domain.follow.service.FollowService;
-import com.example.newsfeedproject.domain.post.mapper.PostMapper;
 import com.example.newsfeedproject.domain.post.dto.PostListResponse;
 import com.example.newsfeedproject.domain.post.dto.PostRequest;
 import com.example.newsfeedproject.domain.post.dto.PostResponse;
 import com.example.newsfeedproject.domain.post.dto.UpdatePostContentRequest;
 import com.example.newsfeedproject.domain.post.entity.Post;
+import com.example.newsfeedproject.domain.post.mapper.PostMapper;
 import com.example.newsfeedproject.domain.post.repository.PostRepository;
 import com.example.newsfeedproject.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -31,9 +31,9 @@ public class PostService implements PostServiceApi {
     private final FollowService followService;
 
     @Transactional
-    public PostResponse createPost(PostRequest postRequest, User user) {
+    public PostResponse createPost(PostRequest request, User user) {
 
-        Post post = postMapper.toEntity(postRequest, user);
+        Post post = postMapper.toEntity(request, user);
 
         postRepository.save(post);
 
@@ -48,8 +48,8 @@ public class PostService implements PostServiceApi {
 
         return new PostListResponse(
                 postResponses,
-                postPage.getSize(),
                 postPage.getNumber(),
+                postPage.getTotalPages(),
                 postPage.getTotalElements());
     }
 
@@ -69,8 +69,8 @@ public class PostService implements PostServiceApi {
 
         return new PostListResponse(
                 postResponses,
-                postPage.getSize(),
                 postPage.getNumber(),
+                postPage.getTotalPages(),
                 postPage.getTotalElements());
     }
 
@@ -104,21 +104,30 @@ public class PostService implements PostServiceApi {
     }
 
     @Transactional
-    public PostResponse updatePostContent(Long postId, UpdatePostContentRequest updatePostContentRequest) {
+    public PostResponse updatePostContent(User user, Long postId, UpdatePostContentRequest request) {
 
         Post existingPost = findPostByIdOrElseThrow(postId);
-        existingPost.updatePostContent(updatePostContentRequest.content());
+        validatePostAuthor(user, existingPost);
 
-        postRepository.save(existingPost);
+        existingPost.updatePostContent(request.content());
 
         return postMapper.toResponse(existingPost);
     }
 
     @Transactional
-    public void deletePostById(Long postId) {
+    public void deletePostById(User user, Long postId) {
 
         Post existingPost = findPostByIdOrElseThrow(postId);
+        validatePostAuthor(user, existingPost);
+
         postRepository.delete(existingPost);
+    }
+
+    private void validatePostAuthor(User user, Post post) {
+
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_POST);
+        }
     }
 
     @Override
