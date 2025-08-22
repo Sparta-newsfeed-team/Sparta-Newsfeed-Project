@@ -34,9 +34,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void withdraw(String email, DeleteUserRequest deleteUserRequest) {
-
-        User user = userService.findUserByEmail(email);
+    public void withdraw(User user, DeleteUserRequest deleteUserRequest) {
 
         if (!passwordEncoder.matches(deleteUserRequest.password(), user.getPassword()))
             throw new BusinessException(ErrorCode.PASSWORD_INCORRECT);

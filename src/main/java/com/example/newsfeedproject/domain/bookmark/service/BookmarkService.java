@@ -29,12 +29,11 @@ public class BookmarkService {
     @Transactional
     public void addBookmark(User user, Long postId) {
 
-        Post post = postService.findPostByIdOrElseThrow(postId);
-
-        boolean exists = bookmarkRepository.existsByUserAndPost(user, post);
+        boolean exists = bookmarkRepository.existsByUserIdAndPostId(user.getId(), postId);
         if (exists)
             throw new BusinessException(ErrorCode.BOOKMARK_ALREADY_EXISTS);
 
+        Post post = postService.findPostByIdOrElseThrow(postId);
         Bookmark bookmark = new Bookmark(user, post);
 
         bookmarkRepository.save(bookmark);
@@ -43,18 +42,17 @@ public class BookmarkService {
     @Transactional
     public void removeBookmark(User user, Long postId) {
 
-        Post post = postService.findPostByIdOrElseThrow(postId);
+        boolean exists = bookmarkRepository.existsByUserIdAndPostId(user.getId(), postId);
+        if (!exists)
+            throw new BusinessException(ErrorCode.BOOKMARK_NOT_FOUND);
 
-        Bookmark bookmark = bookmarkRepository.findByUserAndPost(user, post)
-                        .orElseThrow(() -> new BusinessException(ErrorCode.BOOKMARK_NOT_FOUND));
-
-        bookmarkRepository.delete(bookmark);
+        bookmarkRepository.deleteByUserIdAndPostId(user.getId(), postId);
     }
 
     @Transactional(readOnly = true)
     public PostListResponse getBookmarks(User user, Pageable pageable) {
 
-        Page<Bookmark> bookmarks = bookmarkRepository.findByUser(user, pageable);
+        Page<Bookmark> bookmarks = bookmarkRepository.findByUserId(user.getId(), pageable);
         Page<Post> postPage = bookmarks.map(Bookmark::getPost);
         List<PostResponse> postResponses = postMapper.toListResponse(postPage);
 

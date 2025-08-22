@@ -1,7 +1,6 @@
 package com.example.newsfeedproject.domain.like.repository;
 
 import com.example.newsfeedproject.domain.like.entity.Like;
-import com.example.newsfeedproject.domain.user.dto.PostUserResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
