@@ -1,5 +1,7 @@
 package com.example.newsfeedproject.domain.like.service;
 
+import com.example.newsfeedproject.common.exception.BusinessException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.like.dto.LikeResponse;
 import com.example.newsfeedproject.domain.like.dto.LikeListResponse;
 import com.example.newsfeedproject.domain.like.entity.Like;
@@ -45,11 +47,11 @@ public class LikeService {
                     Post post = postService.findPostByIdOrElseThrow(postId);
 
                     if (post.getUser().getId().equals(userId))
-                        throw new ResponseStatusException(HttpStatus.CONFLICT, "본인 게시물에 좋아요를 누를 수 없습니다.");
+                        throw new BusinessException(ErrorCode.CANNOT_LIKE_SELF);
 
                     // 이미 좋아요 되어 있는 경우
                     if (likeRepository.findByUserIdAndPostId(userId, postId).isPresent())
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요된 게시물입니다.");
+                        throw new BusinessException(ErrorCode.ALREADY_LIKE_APPLIED);
 
                     User user = userService.findUserByIdOrElseThrow(userId);
                     post.increaseLikes();
@@ -79,7 +81,7 @@ public class LikeService {
                     Post post = postService.findPostByIdOrElseThrow(postId);
 
                     if (likeRepository.findByUserIdAndPostId(userId, postId).isEmpty())
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요 취소된 게시물입니다.");
+                        throw new BusinessException(ErrorCode.LIKE_NOT_APPLIED);
 
                     likeRepository.deleteByUserIdAndPostId(userId, postId);
 
