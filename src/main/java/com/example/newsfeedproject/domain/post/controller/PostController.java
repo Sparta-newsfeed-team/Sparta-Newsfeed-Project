@@ -13,10 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,12 +72,16 @@ public class PostController {
 
     // 기간별 게시물 조회 (생성일 기준 최신순)
     @GetMapping("/search/period")
-    public GlobalApiResponse<PostListResponse> getPostsByPeriod(@RequestParam LocalDateTime startDate,
-                                                                @RequestParam LocalDateTime endDate,
+    public GlobalApiResponse<PostListResponse> getPostsByPeriod(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                                                                 @RequestParam(defaultValue = "0") int page) {
 
+        // LocalDate를 LocalDateTime 으로 변환
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
-        PostListResponse postListResponseByPeriod = postService.getPostsByPeriod(startDate, endDate, pageable);
+        PostListResponse postListResponseByPeriod = postService.getPostsByPeriod(startDateTime, endDateTime, pageable);
 
         return GlobalApiResponse.ok("기간별 게시글이 조회되었습니다.", postListResponseByPeriod);
     }

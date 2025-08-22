@@ -32,9 +32,7 @@ public interface PostMapper {
 
     // User Entity -> AuthorResponse DTO
     @Named("toAuthorResponse")
-    default AuthorResponse toAuthorResponse(User user) {
-        return new AuthorResponse(user);
-    }
+    AuthorResponse toAuthorResponse(User user);
 
     // Page<Post> -> List<PostResponse>
     @IterableMapping(qualifiedByName = "toResponse(Post)")
