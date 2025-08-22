@@ -4,6 +4,10 @@ import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.follow.entity.Follow;
 import com.example.newsfeedproject.domain.follow.service.FollowService;
+import com.example.newsfeedproject.domain.hashtag.entity.Hashtag;
+import com.example.newsfeedproject.domain.hashtag.entity.PostHashtag;
+import com.example.newsfeedproject.domain.hashtag.service.HashtagServiceApi;
+import com.example.newsfeedproject.domain.post.mapper.PostMapper;
 import com.example.newsfeedproject.domain.post.dto.PostListResponse;
 import com.example.newsfeedproject.domain.post.dto.PostRequest;
 import com.example.newsfeedproject.domain.post.dto.PostResponse;
@@ -29,6 +33,7 @@ public class PostService implements PostServiceApi {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final FollowService followService;
+    private final HashtagServiceApi hashtagService;
 
     @Transactional
     public PostResponse createPost(PostRequest request, User user) {
@@ -36,6 +41,8 @@ public class PostService implements PostServiceApi {
         Post post = postMapper.toEntity(request, user);
 
         postRepository.save(post);
+
+        hashtagService.saveHashtags(post);
 
         return postMapper.toResponse(post);
     }
@@ -111,6 +118,8 @@ public class PostService implements PostServiceApi {
 
         existingPost.updatePostContent(request.content());
 
+        hashtagService.saveHashtags(existingPost);
+
         return postMapper.toResponse(existingPost);
     }
 
@@ -120,6 +129,7 @@ public class PostService implements PostServiceApi {
         Post existingPost = findPostByIdOrElseThrow(postId);
         validatePostAuthor(user, existingPost);
 
+        hashtagService.deleteHashtagsByPost(existingPost);
         postRepository.delete(existingPost);
     }
 
@@ -128,6 +138,22 @@ public class PostService implements PostServiceApi {
         if (!post.getUser().getId().equals(user.getId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN_POST);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public PostListResponse getPostsByHashtag(String tagName, Pageable pageable) {
+
+        Hashtag hashtag = hashtagService.findHashtagByName(tagName);
+        Page<Post> postPage = postRepository.findByHashtagId(hashtag.getId(), pageable);
+
+        List<PostResponse> postResponses = postMapper.toListResponse(postPage);
+
+        return new PostListResponse(
+                postResponses,
+                postPage.getNumber(),
+                postPage.getTotalPages(),
+                postPage.getTotalElements()
+        );
     }
 
     @Override

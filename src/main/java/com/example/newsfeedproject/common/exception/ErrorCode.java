@@ -27,7 +27,9 @@ public enum ErrorCode {
     INVALID_INPUT_VALUE("VAL-001", "잘못된 입력값 입니다." , HttpStatus.BAD_REQUEST),
 
     COMMENT_NOT_FOUND("CMT-001", "댓글이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
-    FORBIDDEN_COMMENT("CMT-002", "댓글 수정 또는 삭제 권한이 없습니다.", HttpStatus.FORBIDDEN);
+    FORBIDDEN_COMMENT("CMT-002", "댓글 수정 또는 삭제 권한이 없습니다.", HttpStatus.FORBIDDEN),
+
+    HASHTAG_NOT_FOUND("TAG-001", "존재하지 않는 해시태그입니다.", HttpStatus.NOT_FOUND);
 
     private final String code;
     private final String message;
