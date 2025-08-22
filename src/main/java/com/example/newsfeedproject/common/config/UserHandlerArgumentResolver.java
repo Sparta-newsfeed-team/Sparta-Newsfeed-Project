@@ -4,6 +4,7 @@ import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.user.entity.User;
 import com.example.newsfeedproject.domain.user.repository.UserRepository;
+import com.example.newsfeedproject.domain.user.service.UserServiceApi;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -20,7 +21,7 @@ import java.util.Objects;
 public class UserHandlerArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final HttpSession httpSession;
-    private final UserRepository userRepository;
+    private final UserServiceApi userService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -39,6 +40,6 @@ public class UserHandlerArgumentResolver implements HandlerMethodArgumentResolve
         if (Objects.isNull(userId))
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 
-        return userRepository.findByIdOrElseThrow((Long) userId);
+        return userService.findUserByIdOrElseThrow((Long) userId);
     }
 }

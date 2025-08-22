@@ -26,6 +26,8 @@ public class HashtagService implements HashtagServiceApi {
     @Transactional
     public void saveHashtags(Post post) {
 
+        postHashtagRepository.deleteAllByPost(post);
+
         List<String> tagNames = findHashTagByContent(post.getContent());
 
         if (tagNames.isEmpty()) return;
@@ -40,12 +42,14 @@ public class HashtagService implements HashtagServiceApi {
     }
 
     @Override
+    @Transactional
     public void deleteHashtagsByPost(Post post) {
 
         postHashtagRepository.deleteAllByPost(post);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Hashtag findHashtagByName(String tagName) {
 
         return hashtagRepository.findByName(tagName)
@@ -59,7 +63,7 @@ public class HashtagService implements HashtagServiceApi {
         List<String> tags = new ArrayList<>();
 
         while (matcher.find()) {
-            tags.add(matcher.group(1));
+            tags.add(matcher.group().substring(1));
         }
 
         return tags;
