@@ -189,140 +189,64 @@
 newsfeedproject
 ├── common
 │   ├── annotation
-│   │   ├── LoginUserResolver
-│   │   └── ValidPassword
-│   │
 │   ├── config
-│   │   ├── JpaAuditingConfig
-│   │   ├── PasswordEncoder
-│   │   ├── UserHandlerArgumentResolver
-│   │   └── WebConfig
-│   │
 │   ├── dto
-│   │   └── GlobalApiResponse
-│   │
 │   ├── entity
-│   │   └── BaseEntity
-│   │
 │   ├── exception
-│   │   ├── BusinessException
-│   │   ├── ErrorCode
-│   │   └── GlobalExceptionHandler
-│   │
 │   └── validator
-│       └── PasswordValidator
 │
 └── domain
     ├── auth
     │   ├── controller
-    │   │   └── AuthController
     │   └── service
-    │       └── AuthService
     │
     ├── bookmark
     │   ├── controller
-    │   │   └── BookmarkController
     │   ├── entity
-    │   │   └── Bookmark
     │   ├── repository
-    │   │   └── BookmarkRepository
     │   └── service
-    │       └── BookmarkService
     │
     ├── comment
     │   ├── controller
-    │   │   └── CommentController
     │   ├── dto
-    │   │   ├── CommentCreateResponse
-    │   │   ├── CommentListResponse
-    │   │   ├── CommentRequest
-    │   │   └── CommentUpdateResponse
     │   ├── entity
-    │   │   └── Comment
     │   ├── mapper
-    │   │   └── CommentMapper
     │   ├── repository
-    │   │   └── CommentRepository
     │   └── service
-    │       └── CommentService
     │
     ├── follow
     │   ├── controller
-    │   │   └── FollowController
     │   ├── dto
-    │   │   ├── FollowerResponse
-    │   │   └── FollowingResponse
     │   ├── entity
-    │   │   └── Follow
     │   ├── mapper
-    │   │   └── FollowMapper
     │   ├── repository
-    │   │   └── FollowRepository
     │   └── service
-    │       ├── FollowService
-    │       └── FollowServiceApi
     │
     ├── hashtag
     │   ├── entity
-    │   │   ├── Hashtag
-    │   │   └── PostHashtag
     │   ├── repository
-    │   │   ├── HashtagRepository
-    │   │   └── PostHashtagRepository
     │   └── service
-    │       ├── HashtagService
-    │       └── HashtagServiceApi
     │
     ├── like
     │   ├── controller
-    │   │   └── LikeController
     │   ├── dto
-    │   │   ├── LikeListResponse
-    │   │   └── LikeResponse
     │   ├── entity
-    │   │   └── Like
     │   ├── repository
-    │   │   └── LikeRepository
     │   └── service
-    │       └── LikeService
     │
     ├── post
     │   ├── controller
-    │   │   └── PostController
     │   ├── dto
-    │   │   ├── PostListResponse
-    │   │   ├── PostRequest
-    │   │   ├── PostResponse
-    │   │   └── UpdatePostContentRequest
     │   ├── entity
-    │   │   └── Post
     │   ├── mapper
-    │   │   └── PostMapper
     │   ├── repository
-    │   │   └── PostRepository
     │   └── service
-    │       ├── PostService
-    │       └── PostServiceApi
     │
     └── user
         ├── controller
-        │   └── UserController
         ├── dto
-        │   ├── AuthorResponse
-        │   ├── DeleteUserRequest
-        │   ├── LoginRequest
-        │   ├── SignupRequest
-        │   ├── UpdatePasswordRequest
-        │   ├── UpdateUserInfoRequest
-        │   └── UserResponse
         ├── entity
-        │   └── User
         ├── mapper
-        │   └── UserMapper
         ├── repository
-        │   └── UserRepository
         └── service
-            ├── UserService
-            └── UserServiceApi
- └── NewsfeedProjectApplication
 ```
