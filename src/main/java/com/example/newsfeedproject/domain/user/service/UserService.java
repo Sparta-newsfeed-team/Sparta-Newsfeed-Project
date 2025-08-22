@@ -26,6 +26,9 @@ public class UserService implements UserServiceApi {
 
         User foundUser = findUserByIdOrElseThrow(id);
 
+        if (!foundUser.isUsable())
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_USER);
+
         return userMapper.toResponse(foundUser);
     }
 
