@@ -1,6 +1,7 @@
 package com.example.newsfeedproject.domain.like.repository;
 
 import com.example.newsfeedproject.domain.like.entity.Like;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,5 +13,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     void deleteByUserIdAndPostId(Long userId, Long postId);
 
+    @EntityGraph(attributePaths = {"user"})
     List<Like> findByPostId(Long postId);
 }

@@ -6,6 +6,6 @@ import java.util.List;
 
 public record LikeListResponse(
 
-        List<AuthorResponse> authorList,
+        List<AuthorResponse> LikedUsers,
         Long totalLikes
 ) {}
