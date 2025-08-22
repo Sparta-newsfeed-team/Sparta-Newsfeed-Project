@@ -1,13 +1,13 @@
 package com.example.newsfeedproject.domain.like.controller;
 
 import com.example.newsfeedproject.common.annotation.LoginUserResolver;
+import com.example.newsfeedproject.common.dto.GlobalApiResponse;
 import com.example.newsfeedproject.domain.like.dto.LikeResponse;
 import com.example.newsfeedproject.domain.like.dto.LikeListResponse;
 import com.example.newsfeedproject.domain.like.service.LikeService;
 import com.example.newsfeedproject.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,26 +18,26 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping
-    public ResponseEntity<LikeResponse> addLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
+    public GlobalApiResponse<LikeResponse> addLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
 
         LikeResponse addedLikeResponse = likeService.addLike(postId, user.getId());
 
-        return ResponseEntity.ok(addedLikeResponse);
+        return GlobalApiResponse.ok("좋아요가 추가되었습니다.", addedLikeResponse);
     }
 
     @DeleteMapping
-    public ResponseEntity<LikeResponse> deleteLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
+    public GlobalApiResponse<LikeResponse> deleteLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
 
         LikeResponse deletedLike = likeService.deleteLike(postId, user.getId());
 
-        return ResponseEntity.ok(deletedLike);
+        return GlobalApiResponse.ok("좋아요가 취소되었습니다.", deletedLike);
     }
 
     @GetMapping
-    public ResponseEntity<LikeListResponse> getLike(@Valid @PathVariable Long postId) {
+    public GlobalApiResponse<LikeListResponse> getLike(@Valid @PathVariable Long postId) {
 
         LikeListResponse likeListResponse = likeService.getLikeList(postId);
 
-        return ResponseEntity.ok(likeListResponse);
+        return GlobalApiResponse.ok("게시글 좋아요 목록이 조회되었습니다.", likeListResponse);
     }
 }
