@@ -18,7 +18,7 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping
-    public GlobalApiResponse<LikeResponse> addLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
+    public GlobalApiResponse<LikeResponse> addLike(@LoginUserResolver User user, @PathVariable Long postId) {
 
         LikeResponse addedLikeResponse = likeService.addLike(user.getId(), postId);
 
@@ -26,7 +26,7 @@ public class LikeController {
     }
 
     @DeleteMapping
-    public GlobalApiResponse<LikeResponse> deleteLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
+    public GlobalApiResponse<LikeResponse> deleteLike(@LoginUserResolver User user,@PathVariable Long postId) {
 
         LikeResponse deletedLike = likeService.deleteLike(user.getId(), postId);
 
@@ -34,7 +34,7 @@ public class LikeController {
     }
 
     @GetMapping
-    public GlobalApiResponse<LikeListResponse> getLike(@Valid @PathVariable Long postId) {
+    public GlobalApiResponse<LikeListResponse> getLike(@PathVariable Long postId) {
 
         LikeListResponse likeListResponse = likeService.getLikeList(postId);
 
