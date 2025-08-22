@@ -3,8 +3,11 @@ package com.example.newsfeedproject.domain.auth.controller;
 import com.example.newsfeedproject.common.annotation.LoginUserResolver;
 import com.example.newsfeedproject.domain.auth.service.AuthService;
 import com.example.newsfeedproject.domain.user.dto.DeleteUserRequest;
+import com.example.newsfeedproject.domain.user.dto.LoginRequest;
 import com.example.newsfeedproject.domain.user.dto.SignupRequest;
 import com.example.newsfeedproject.domain.user.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,18 @@ public class AuthController {
         authService.signup(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.");
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request,
+                                        HttpServletRequest httpServletRequest) {
+
+        Long userId = authService.login(request);
+        HttpSession httpSession = httpServletRequest.getSession();
+
+        httpSession.setAttribute("LOGIN_USER", userId);
+        return ResponseEntity.status(HttpStatus.OK).body("로그인 되었습니다.");
     }
 
     //회원탈퇴
