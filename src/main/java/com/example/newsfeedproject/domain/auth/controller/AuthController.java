@@ -41,6 +41,19 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body("로그인 되었습니다.");
     }
 
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest httpServletRequest) {
+
+        HttpSession httpSession = httpServletRequest.getSession(false); // 세션 생성 금지
+
+        // 로그인이 되어있는 경우 세션 삭제
+        if (httpSession != null)
+            httpSession.invalidate();
+
+        return ResponseEntity.status(HttpStatus.OK).body("로그아웃 되었습니다.");
+    }
+
     //회원탈퇴
     @DeleteMapping("/withdraw")
     public ResponseEntity<String> withdraw(@LoginUserResolver User user,
