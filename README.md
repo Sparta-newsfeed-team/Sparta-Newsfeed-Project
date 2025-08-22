@@ -165,3 +165,19 @@
 | Feature         | METHOD | ENDPOINT                          | Request |
 |-----------------|--------|-----------------------------------|---------|
 | 특정 해시태그의 게시물 조회 | GET    | `/post/search/hashtag?tag=&page=` |         |
+
+---
+
+## 📍 트러블 슈팅
+
+프로젝트를 진행하며 마주쳤던 주요 기술적 문제와 해결 과정을 기록했습니다.
+
+| No. | 문제 상황 요약 |  상세 내용 |
+|-----|----------------|--------------|
+| 1 | 잘못된 해시태그 DB 설계 | [Link](https://www.notion.so/DB-2575c36cb0a280b0a36bc98960de24c9) |
+| 2 | 기간별 게시물 조회 시 바인딩 오류 | [Link](https://www.notion.so/2575c36cb0a2804bb61acf7acf0017ac) |
+| 3 | 다른 도메인 서비스 사용 문제 | [Link](https://www.notion.so/2575c36cb0a280f58fb6ef62ade95c2d) |
+| 4 | MySQL 접속 시 비밀번호 불일치 에러 |  [Link](https://www.notion.so/MySQL-2575c36cb0a280b8b7a7f1a0060beca8) |
+| 5 | MapStruct의 DTO → Entity 매핑 문제 |  [Link](https://www.notion.so/DTO-Entity-2575c36cb0a28011ad48c7deaa7b0aae) |
+
+
