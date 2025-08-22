@@ -10,6 +10,7 @@ public enum ErrorCode {
 
     USER_NOT_FOUND("AUTH-001", "사용자를 찾지 못했습니다.", HttpStatus.NOT_FOUND),
     EMAIL_ALREADY_EXISTS("AUTH-002", "이미 존재하는 이메일입니다.", HttpStatus.BAD_REQUEST),
+    UNAUTHORIZED_USER("AUTH-003", "사용할 수 없는 사용자입니다.", HttpStatus.UNAUTHORIZED),
 
     PASSWORD_INCORRECT("USR-001", "비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
     PASSWORD_NOT_AVAILABLE("USR-002", "새 비밀번호는 현재 비밀번호와 달라야 합니다.", HttpStatus.BAD_REQUEST),
