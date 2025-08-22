@@ -1,16 +1,16 @@
 package com.example.newsfeedproject.domain.comment.service;
 
+import com.example.newsfeedproject.common.exception.BusinessException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.comment.dto.CommentCreateResponse;
 import com.example.newsfeedproject.domain.comment.dto.CommentListResponse;
 import com.example.newsfeedproject.domain.comment.dto.CommentRequest;
 import com.example.newsfeedproject.domain.comment.dto.CommentUpdateResponse;
 import com.example.newsfeedproject.domain.comment.entity.Comment;
-import com.example.newsfeedproject.domain.comment.repository.CommentRepository;
-import com.example.newsfeedproject.common.exception.BusinessException;
-import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.comment.mapper.CommentMapper;
+import com.example.newsfeedproject.domain.comment.repository.CommentRepository;
 import com.example.newsfeedproject.domain.post.entity.Post;
-import com.example.newsfeedproject.domain.post.service.PostService;
+import com.example.newsfeedproject.domain.post.service.PostServiceApi;
 import com.example.newsfeedproject.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
-    private final PostService postService;
+    private final PostServiceApi postService;
 
     @Transactional
     public CommentCreateResponse createComment(Long postId, CommentRequest request, User user) {
@@ -53,7 +53,6 @@ public class CommentService {
     public CommentUpdateResponse updateComment(Long commentId, CommentRequest request, User user) {
 
         Comment comment = findByCommentId(commentId);
-
         validateAuthorOrPostAuthor(comment, user);
 
         comment.updateContent(request.content());
@@ -65,7 +64,6 @@ public class CommentService {
     public void deleteComment(Long commentId, User user) {
 
         Comment comment = findByCommentId(commentId);
-
         validateAuthorOrPostAuthor(comment, user);
 
         commentRepository.delete(comment);
