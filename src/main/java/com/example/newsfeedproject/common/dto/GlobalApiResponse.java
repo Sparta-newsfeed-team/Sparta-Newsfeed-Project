@@ -1,7 +1,12 @@
 package com.example.newsfeedproject.common.dto;
 
-public record GlobalApiResponse(
+import java.time.LocalDateTime;
 
-        String code,
-        String message
+public record GlobalApiResponse<T> (
+
+        String status,
+        String message,
+        T data,
+        LocalDateTime timestamp,
+        int code
 ) { }
