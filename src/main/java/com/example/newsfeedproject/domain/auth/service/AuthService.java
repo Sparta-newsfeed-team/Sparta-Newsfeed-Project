@@ -3,6 +3,7 @@ package com.example.newsfeedproject.domain.auth.service;
 import com.example.newsfeedproject.common.config.PasswordEncoder;
 import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
+import com.example.newsfeedproject.domain.user.dto.LoginRequest;
 import com.example.newsfeedproject.domain.user.mapper.UserMapper;
 import com.example.newsfeedproject.domain.user.dto.DeleteUserRequest;
 import com.example.newsfeedproject.domain.user.dto.SignupRequest;
@@ -34,14 +35,27 @@ public class AuthService {
     }
 
     @Transactional
+    public Long login(LoginRequest loginRequest) {
+
+        User user = userService.findUserByEmail(loginRequest.email());
+
+        throwIfPasswordMismatch(loginRequest.password(), user.getPassword());
+
+        return user.getId();
+    }
+
+    @Transactional
     public void withdraw(User user, DeleteUserRequest deleteUserRequest) {
 
-        if (!passwordEncoder.matches(deleteUserRequest.password(), user.getPassword()))
-            throw new BusinessException(ErrorCode.PASSWORD_INCORRECT);
-
-        // 유저 논리적 삭제
+        // 비밀번호 확인 후 유저 논리적 삭제
+        throwIfPasswordMismatch(deleteUserRequest.password(), user.getPassword());
         user.markAsWithdrawn();
 
         userService.saveUser(user);
+    }
+
+    public void throwIfPasswordMismatch(String rawPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(rawPassword, encodedPassword))
+            throw new BusinessException(ErrorCode.PASSWORD_INCORRECT);
     }
 }
