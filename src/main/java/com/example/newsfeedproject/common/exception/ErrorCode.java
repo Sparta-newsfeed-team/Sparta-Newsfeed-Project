@@ -15,6 +15,7 @@ public enum ErrorCode {
     PASSWORD_NOT_AVAILABLE("USR-002", "새 비밀번호는 현재 비밀번호와 달라야 합니다.", HttpStatus.BAD_REQUEST),
 
     POST_NOT_FOUND("POST-001", "존재하지 않는 게시물입니다.", HttpStatus.NOT_FOUND),
+    FORBIDDEN_POST("POST-002", "작성자만 수정 또는 삭제할 수 있습니다.", HttpStatus.FORBIDDEN),
 
     CANNOT_FOLLOW_SELF("FOLL-001", "자기 자신을 팔로우할 수 없습니다.", HttpStatus.BAD_REQUEST),
     ALREADY_FOLLOWED("FOLL-002", "이미 팔로우 한 유저입니다.", HttpStatus.BAD_REQUEST),

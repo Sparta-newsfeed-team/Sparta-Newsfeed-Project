@@ -8,5 +8,4 @@ public record PostListResponse(
         int page,
         int totalPages,
         long totalElements
-) {
-}
+) {}

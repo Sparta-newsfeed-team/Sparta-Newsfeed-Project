@@ -3,9 +3,11 @@ package com.example.newsfeedproject.domain.post.mapper;
 import com.example.newsfeedproject.domain.post.dto.PostRequest;
 import com.example.newsfeedproject.domain.post.dto.PostResponse;
 import com.example.newsfeedproject.domain.post.entity.Post;
+import com.example.newsfeedproject.domain.user.dto.AuthorResponse;
 import com.example.newsfeedproject.domain.user.entity.User;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.data.domain.Page;
 
@@ -20,12 +22,19 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PostMapper {
 
-    // PostRequest DTO -> Post 엔티티
+    // PostRequest DTO -> Post Entity
     Post toEntity(PostRequest postRequest, User user);
 
     // Post Entity -> PostResponse DTO
+    @Mapping(source = "user", target = "author", qualifiedByName = "toAuthorResponse")
     @Named("toResponse(Post)")
     PostResponse toResponse(Post post);
+
+    // User Entity -> AuthorResponse DTO
+    @Named("toAuthorResponse")
+    default AuthorResponse toAuthorResponse(User user) {
+        return new AuthorResponse(user);
+    }
 
     // Page<Post> -> List<PostResponse>
     @IterableMapping(qualifiedByName = "toResponse(Post)")
