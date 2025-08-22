@@ -20,7 +20,7 @@ public class LikeController {
     @PostMapping
     public GlobalApiResponse<LikeResponse> addLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
 
-        LikeResponse addedLikeResponse = likeService.addLike(postId, user.getId());
+        LikeResponse addedLikeResponse = likeService.addLike(user.getId(), postId);
 
         return GlobalApiResponse.ok("좋아요가 추가되었습니다.", addedLikeResponse);
     }
@@ -28,7 +28,7 @@ public class LikeController {
     @DeleteMapping
     public GlobalApiResponse<LikeResponse> deleteLike(@LoginUserResolver User user, @Valid @PathVariable Long postId) {
 
-        LikeResponse deletedLike = likeService.deleteLike(postId, user.getId());
+        LikeResponse deletedLike = likeService.deleteLike(user.getId(), postId);
 
         return GlobalApiResponse.ok("좋아요가 취소되었습니다.", deletedLike);
     }
