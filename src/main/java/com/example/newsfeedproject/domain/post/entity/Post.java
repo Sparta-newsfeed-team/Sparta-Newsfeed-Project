@@ -6,10 +6,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
 public class Post extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +24,7 @@ public class Post extends BaseEntity {
     @Column(nullable = false, length = 300)
     private String content;
 
+    @ColumnDefault("'0'")
     private Long likesCount;
 
     // @Version 필드는 JPA가 내부적으로 사용하기 때문에, 실제 코드에서 직접 접근하지 않아도 동작합니다.

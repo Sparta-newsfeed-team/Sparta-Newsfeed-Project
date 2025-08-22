@@ -19,7 +19,7 @@ public class BookmarkController {
 
     @PostMapping("/posts/{postId}/bookmarks")
     public GlobalApiResponse<?> addBookmark(@LoginUserResolver User user,
-                                         @PathVariable Long postId) {
+                                            @PathVariable Long postId) {
 
         bookmarkService.addBookmark(user, postId);
 
@@ -28,7 +28,7 @@ public class BookmarkController {
 
     @DeleteMapping("/posts/{postId}/bookmarks")
     public GlobalApiResponse<?> removeBookmark(@LoginUserResolver User user,
-                                                 @PathVariable Long postId) {
+                                               @PathVariable Long postId) {
 
         bookmarkService.removeBookmark(user, postId);
 

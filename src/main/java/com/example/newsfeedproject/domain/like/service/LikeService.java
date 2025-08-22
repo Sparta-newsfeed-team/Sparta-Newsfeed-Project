@@ -1,5 +1,7 @@
 package com.example.newsfeedproject.domain.like.service;
 
+import com.example.newsfeedproject.common.exception.BusinessException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.like.dto.LikeResponse;
 import com.example.newsfeedproject.domain.like.dto.LikeListResponse;
 import com.example.newsfeedproject.domain.like.entity.Like;
@@ -11,12 +13,10 @@ import com.example.newsfeedproject.domain.user.entity.User;
 import com.example.newsfeedproject.domain.user.service.UserServiceApi;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -45,11 +45,11 @@ public class LikeService {
                     Post post = postService.findPostByIdOrElseThrow(postId);
 
                     if (post.getUser().getId().equals(userId))
-                        throw new ResponseStatusException(HttpStatus.CONFLICT, "본인 게시물에 좋아요를 누를 수 없습니다.");
+                        throw new BusinessException(ErrorCode.CANNOT_LIKE_SELF);
 
                     // 이미 좋아요 되어 있는 경우
                     if (likeRepository.findByUserIdAndPostId(userId, postId).isPresent())
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요된 게시물입니다.");
+                        throw new BusinessException(ErrorCode.ALREADY_LIKE_APPLIED);
 
                     User user = userService.findUserByIdOrElseThrow(userId);
                     post.increaseLikes();
@@ -79,7 +79,7 @@ public class LikeService {
                     Post post = postService.findPostByIdOrElseThrow(postId);
 
                     if (likeRepository.findByUserIdAndPostId(userId, postId).isEmpty())
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 좋아요 취소된 게시물입니다.");
+                        throw new BusinessException(ErrorCode.LIKE_NOT_APPLIED);
 
                     likeRepository.deleteByUserIdAndPostId(userId, postId);
 

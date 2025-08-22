@@ -39,6 +39,8 @@ public class AuthService {
 
         User user = userService.findUserByEmail(loginRequest.email());
 
+        // 사용할 수 있는 계정 확인 -> 비밀번호 확인
+        throwIfUserIsNotUsable(user);
         throwIfPasswordMismatch(loginRequest.password(), user.getPassword());
 
         return user.getId();
@@ -57,5 +59,10 @@ public class AuthService {
     public void throwIfPasswordMismatch(String rawPassword, String encodedPassword) {
         if (!passwordEncoder.matches(rawPassword, encodedPassword))
             throw new BusinessException(ErrorCode.PASSWORD_INCORRECT);
+    }
+
+    public void throwIfUserIsNotUsable(User user) {
+        if (!user.isUsable())
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_USER);
     }
 }

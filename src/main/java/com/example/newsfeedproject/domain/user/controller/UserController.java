@@ -49,7 +49,7 @@ public class UserController {
     // 비밀번호 변경
     @PatchMapping("/password")
     public GlobalApiResponse<String> updatePassword(@LoginUserResolver User user,
-                                               @RequestBody @Valid UpdatePasswordRequest request) {
+                                                    @RequestBody @Valid UpdatePasswordRequest request) {
 
         userService.updatePassword(user.getId(), request);
 
