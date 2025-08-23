@@ -3,7 +3,6 @@ package com.example.newsfeedproject.common.config;
 import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.domain.user.entity.User;
-import com.example.newsfeedproject.domain.user.repository.UserRepository;
 import com.example.newsfeedproject.domain.user.service.UserServiceApi;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-public class UserHandlerArgumentResolver implements HandlerMethodArgumentResolver {
+public class UserMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final HttpSession httpSession;
     private final UserServiceApi userService;
