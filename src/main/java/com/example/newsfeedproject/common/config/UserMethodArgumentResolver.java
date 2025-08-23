@@ -2,9 +2,10 @@ package com.example.newsfeedproject.common.config;
 
 import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
+import com.example.newsfeedproject.common.security.JwtUtil;
 import com.example.newsfeedproject.domain.user.entity.User;
 import com.example.newsfeedproject.domain.user.service.UserServiceApi;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -19,8 +20,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final HttpSession httpSession;
     private final UserServiceApi userService;
+    private final JwtUtil jwtUtil;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -34,11 +35,16 @@ public class UserMethodArgumentResolver implements HandlerMethodArgumentResolver
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) {
 
-        Object userId = httpSession.getAttribute("LOGIN_USER");
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-        if (Objects.isNull(userId))
+        String header = request.getHeader("Authorization");
+
+        if (Objects.isNull(header) || !header.startsWith("Bearer "))
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 
-        return userService.findUserByIdOrElseThrow((Long) userId);
+        String token = header.substring("Bearer ".length());
+        long userId = jwtUtil.getUserIdFromToken(token);
+
+        return userService.findUserByIdOrElseThrow(userId);
     }
 }
