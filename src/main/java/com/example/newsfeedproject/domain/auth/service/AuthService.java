@@ -3,6 +3,7 @@ package com.example.newsfeedproject.domain.auth.service;
 import com.example.newsfeedproject.common.config.PasswordEncoder;
 import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
+import com.example.newsfeedproject.common.security.JwtUtil;
 import com.example.newsfeedproject.domain.user.dto.LoginRequest;
 import com.example.newsfeedproject.domain.user.mapper.UserMapper;
 import com.example.newsfeedproject.domain.user.dto.DeleteUserRequest;
@@ -19,6 +20,7 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final JwtUtil jwtUtil;
     private final UserServiceApi userService;
 
     @Transactional
@@ -35,7 +37,7 @@ public class AuthService {
     }
 
     @Transactional
-    public Long login(LoginRequest loginRequest) {
+    public String login(LoginRequest loginRequest) {
 
         User user = userService.findUserByEmail(loginRequest.email());
 
@@ -43,7 +45,7 @@ public class AuthService {
         throwIfUserIsNotUsable(user);
         throwIfPasswordMismatch(loginRequest.password(), user.getPassword());
 
-        return user.getId();
+        return jwtUtil.createToken(user.getId());
     }
 
     @Transactional

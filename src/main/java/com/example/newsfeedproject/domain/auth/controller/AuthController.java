@@ -31,15 +31,11 @@ public class AuthController {
 
     // 로그인
     @PostMapping("/login")
-    public GlobalApiResponse<?> login(@Valid @RequestBody LoginRequest request,
-                                      HttpServletRequest httpServletRequest) {
+    public GlobalApiResponse<?> login(@Valid @RequestBody LoginRequest request) {
 
-        Long userId = authService.login(request);
-        HttpSession httpSession = httpServletRequest.getSession();
+        String token = authService.login(request);
 
-        httpSession.setAttribute("LOGIN_USER", userId);
-
-        return GlobalApiResponse.ok("로그인 되었습니다.", null);
+        return GlobalApiResponse.ok("로그인 되었습니다.", token);
     }
 
     // 로그아웃
