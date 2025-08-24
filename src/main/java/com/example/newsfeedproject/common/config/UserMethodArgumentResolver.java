@@ -5,6 +5,7 @@ import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.common.security.JwtUtil;
 import com.example.newsfeedproject.domain.user.entity.User;
 import com.example.newsfeedproject.domain.user.service.UserServiceApi;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -38,18 +39,20 @@ public class UserMethodArgumentResolver implements HandlerMethodArgumentResolver
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
         String header = request.getHeader("Authorization");
-
         if (Objects.isNull(header) || !header.startsWith("Bearer "))
-            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+            throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
 
         String token = header.substring("Bearer ".length());
-        long userId = jwtUtil.getUserIdFromToken(token);
 
-        User user = userService.findUserByIdOrElseThrow(userId);
+        try {
+            long userId = jwtUtil.getUserIdFromToken(token);
+            User user = userService.findUserByIdOrElseThrow(userId);
+            if (!user.isUsable())
+                throw new BusinessException(ErrorCode.UNAUTHORIZED_USER);
 
-        if (!user.isUsable())
-            throw new BusinessException(ErrorCode.UNAUTHORIZED_USER);
-
-        return user;
+            return user;
+        } catch (ExpiredJwtException e) {
+            throw new BusinessException(ErrorCode.TOKEN_EXPIRED);
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.example.newsfeedproject.common.config.PasswordEncoder;
 import com.example.newsfeedproject.common.exception.BusinessException;
 import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.common.security.JwtUtil;
+import com.example.newsfeedproject.domain.auth.dto.TokenResponse;
 import com.example.newsfeedproject.domain.user.dto.LoginRequest;
 import com.example.newsfeedproject.domain.user.mapper.UserMapper;
 import com.example.newsfeedproject.domain.user.dto.DeleteUserRequest;
@@ -37,15 +38,17 @@ public class AuthService {
     }
 
     @Transactional
-    public String login(LoginRequest loginRequest) {
+    public TokenResponse login(LoginRequest loginRequest) {
 
         User user = userService.findUserByEmail(loginRequest.email());
-
         // 사용할 수 있는 계정 확인 -> 비밀번호 확인
         throwIfUserIsNotUsable(user);
         throwIfPasswordMismatch(loginRequest.password(), user.getPassword());
 
-        return jwtUtil.createToken(user.getId());
+        String accessToken = jwtUtil.createAccessToken(user.getId());
+        String refreshToken = jwtUtil.createRefreshToken(user.getId());
+
+        return new TokenResponse(accessToken, refreshToken);
     }
 
     @Transactional
