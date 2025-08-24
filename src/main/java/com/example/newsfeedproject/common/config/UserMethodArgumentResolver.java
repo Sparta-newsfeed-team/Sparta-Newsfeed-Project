@@ -45,6 +45,11 @@ public class UserMethodArgumentResolver implements HandlerMethodArgumentResolver
         String token = header.substring("Bearer ".length());
         long userId = jwtUtil.getUserIdFromToken(token);
 
-        return userService.findUserByIdOrElseThrow(userId);
+        User user = userService.findUserByIdOrElseThrow(userId);
+
+        if (!user.isUsable())
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_USER);
+
+        return user;
     }
 }

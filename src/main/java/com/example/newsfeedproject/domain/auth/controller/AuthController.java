@@ -7,8 +7,6 @@ import com.example.newsfeedproject.domain.user.dto.DeleteUserRequest;
 import com.example.newsfeedproject.domain.user.dto.LoginRequest;
 import com.example.newsfeedproject.domain.user.dto.SignupRequest;
 import com.example.newsfeedproject.domain.user.entity.User;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
+
     private final AuthService authService;
 
     // 회원가입
@@ -40,9 +39,7 @@ public class AuthController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public GlobalApiResponse<?> logout(HttpServletRequest httpServletRequest) {
-
-        sessionLogoutApply(httpServletRequest);
+    public GlobalApiResponse<?> logout() {
 
         return GlobalApiResponse.ok("로그아웃 되었습니다.", null);
     }
@@ -50,25 +47,10 @@ public class AuthController {
     // 회원탈퇴
     @DeleteMapping("/withdraw")
     public GlobalApiResponse<?> withdraw(@LoginUserResolver User user,
-                                         @Valid @RequestBody DeleteUserRequest request,
-                                         HttpServletRequest httpServletRequest) {
+                                         @Valid @RequestBody DeleteUserRequest request) {
 
-        // 로그인된 사용자인 경우, 서비스 로직 호출한 뒤 로그아웃 적용
         authService.withdraw(user, request);
-        sessionLogoutApply(httpServletRequest);
 
         return GlobalApiResponse.ok("회원탈퇴 되었습니다.", null);
-    }
-
-    /**
-     * 로그아웃 또는 회원 탈퇴시 세션 삭제
-     */
-    public void sessionLogoutApply(HttpServletRequest httpServletRequest) {
-
-        HttpSession httpSession = httpServletRequest.getSession(false); // 세션 생성 금지
-
-        // 로그인이 되어있는 경우 세션 삭제
-        if (httpSession != null)
-            httpSession.invalidate();
     }
 }
