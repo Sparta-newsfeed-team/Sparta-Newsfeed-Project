@@ -24,6 +24,7 @@
 - **Validation** : Request 검증
 - **BCrypt** : 사용자 비밀번호 암호화
 - **JPA** : 데이터베이스 연동
+- **JWT** : JSON Web Token 기반의 인증/인가 처리
 - **Lombok** : 코드 생산성 향상
 
 ---
