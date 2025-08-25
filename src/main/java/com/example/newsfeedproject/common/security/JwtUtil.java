@@ -15,18 +15,30 @@ import java.util.Date;
 public class JwtUtil {
 
     private static final SecretKey SECRET_KEY =
-            Keys.hmacShaKeyFor("64K07J2867Cw7JuA7Lqg7ZSEMTDsobDribTsiqTtlLzrk5ztlITroZzsoJ3tirg".getBytes(StandardCharsets.UTF_8));
+            Keys.hmacShaKeyFor(JwtConstants.Secret.getBytes(StandardCharsets.UTF_8));
 
-    // 토큰 발급
-    public String createToken(long userId) {
+    // 액세스 토큰 발급
+    public String createAccessToken(long userId) {
 
         Date now = new Date();
-        long TOKEN_VALIDITY_IN_SECONDS = 1000 * 60 * 60;
 
         return Jwts.builder()
                 .subject(String.valueOf(userId))
                 .issuedAt(now)
-                .expiration(new Date(now.getTime() + TOKEN_VALIDITY_IN_SECONDS))
+                .expiration(new Date(now.getTime() + JwtConstants.ACCESS_TOKEN_EXPIRATION))
+                .signWith(SECRET_KEY, Jwts.SIG.HS256)
+                .compact();
+    }
+
+    // 리프레시 토큰 발급
+    public String createRefreshToken(long userId) {
+
+        Date now = new Date();
+
+        return Jwts.builder()
+                .subject(String.valueOf(userId))
+                .issuedAt(now)
+                .expiration(new Date(now.getTime() + JwtConstants.REFRESH_TOKEN_EXPIRATION))
                 .signWith(SECRET_KEY, Jwts.SIG.HS256)
                 .compact();
     }
